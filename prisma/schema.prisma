@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  KASIR
+  DAPUR
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+}
+
+enum OrderStatus {
+  BARU
+  DIPROSES
+  SIAP
+  SELESAI
+  DIBATALKAN
+}
+
+enum PaymentMethod {
+  TUNAI
+  QRIS
+  TRANSFER
+}
+
+enum TableStatus {
+  KOSONG
+  TERISI
+}
+
+enum StockMovementType {
+  MASUK
+  KELUAR
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         Role
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orders          Order[]         @relation("OrderCreatedBy")
+  payments        Payment[]       @relation("PaymentCashier")
+  stockMovements  StockMovement[] @relation("StockMovementCreatedBy")
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  menuItems MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Int
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category    Category         @relation(fields: [categoryId], references: [id])
+  ingredients MenuIngredient[]
+  orderItems  OrderItem[]
+}
+
+model Ingredient {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  unit      String
+  stock     Float    @default(0)
+  minStock  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  menuItems      MenuIngredient[]
+  stockMovements StockMovement[]
+}
+
+model MenuIngredient {
+  id           String @id @default(cuid())
+  menuItemId   String
+  ingredientId String
+  qtyPerPortion Float
+
+  menuItem   MenuItem   @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+
+  @@unique([menuItemId, ingredientId])
+}
+
+model RestaurantTable {
+  id       String      @id @default(cuid())
+  number   String      @unique
+  capacity Int         @default(2)
+  status   TableStatus @default(KOSONG)
+
+  orders Order[]
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderNumber  String      @unique
+  tableId      String?
+  orderType    OrderType
+  customerName String?
+  status       OrderStatus @default(BARU)
+  note         String?
+  createdById  String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  table      RestaurantTable? @relation(fields: [tableId], references: [id])
+  createdBy  User             @relation("OrderCreatedBy", fields: [createdById], references: [id])
+  items      OrderItem[]
+  payment    Payment?
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String
+  menuItemId String
+  qty        Int
+  price      Int
+  note       String?
+
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id])
+}
+
+model Payment {
+  id         String        @id @default(cuid())
+  orderId    String        @unique
+  method     PaymentMethod
+  amount     Int
+  cashReceived Int?
+  cashierId  String
+  paidAt     DateTime      @default(now())
+
+  order   Order @relation(fields: [orderId], references: [id])
+  cashier User  @relation("PaymentCashier", fields: [cashierId], references: [id])
+}
+
+model StockMovement {
+  id           String            @id @default(cuid())
+  ingredientId String
+  type         StockMovementType
+  qty          Float
+  note         String?
+  createdById  String
+  createdAt    DateTime          @default(now())
+
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+  createdBy  User       @relation("StockMovementCreatedBy", fields: [createdById], references: [id])
+}
+
+model Settings {
+  id      String @id @default(cuid())
+  name    String @default("Warung Makan Geprek Rzqa")
+  address String @default("")
+  phone   String @default("")
+  footer  String @default("Terima kasih telah berkunjung!")
+}
