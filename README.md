@@ -1,6 +1,6 @@
 # Geprek Rzqa — Sistem Manajemen Warung Makan
 
-Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-hari: kasir/POS, dapur, stok bahan baku, meja, menu & resep, laporan penjualan, hingga manajemen pegawai. Dibangun dengan Next.js (App Router), TypeScript, Prisma + SQLite, dan Tailwind CSS.
+Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-hari: kasir/POS, dapur, stok bahan baku, meja, menu & resep, laporan penjualan, hingga manajemen pegawai. Dibangun dengan Next.js (App Router), TypeScript, Prisma + PostgreSQL, dan Tailwind CSS.
 
 ## Fitur Utama
 
@@ -24,30 +24,34 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 
 ## Menjalankan Secara Lokal
 
-### 1. Persiapan
+### 1. Siapkan database PostgreSQL gratis
+
+Aplikasi ini butuh database PostgreSQL. Cara tercepat & gratis: buat akun di [neon.tech](https://neon.tech) atau [supabase.com](https://supabase.com), buat project baru, lalu salin connection string-nya (format: `postgresql://user:password@host/dbname?sslmode=require`).
+
+### 2. Persiapan
 
 ```bash
 npm install
 cp .env.example .env
 ```
 
-Isi `.env` bila perlu (nilai default sudah bisa langsung dipakai untuk pengembangan lokal):
+Isi `.env`:
 
 ```
-DATABASE_URL="file:./dev.db"
+DATABASE_URL="postgresql://user:password@host/dbname?sslmode=require"
 AUTH_SECRET="ganti-dengan-string-acak-yang-panjang-dan-rahasia"
 ```
 
-### 2. Siapkan database
+### 3. Migrasi & isi data contoh
 
 ```bash
-npx prisma migrate dev
+npx prisma migrate deploy
 npm run db:seed
 ```
 
 Perintah seed akan membuat data contoh: kategori & menu geprek, bahan baku, 8 meja, dan 3 akun pengguna demo.
 
-### 3. Jalankan server pengembangan
+### 4. Jalankan server pengembangan
 
 ```bash
 npm run dev
@@ -86,7 +90,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 - **Next.js 16** (App Router, Server Actions, Turbopack)
 - **TypeScript**
-- **Prisma ORM + SQLite** (`prisma/schema.prisma`) — mudah diganti ke PostgreSQL/MySQL untuk produksi dengan mengubah `provider` datasource
+- **Prisma ORM + PostgreSQL** (`prisma/schema.prisma`)
 - **NextAuth v5 (Auth.js)** — autentikasi berbasis kredensial dengan sesi JWT dan middleware proteksi rute berbasis peran
 - **Tailwind CSS** untuk tampilan
 - **Recharts** untuk grafik penjualan
@@ -101,7 +105,6 @@ Sebelum digunakan secara nyata untuk operasional warung:
 
 - Ganti `AUTH_SECRET` dengan nilai acak yang kuat dan rahasia.
 - Set `SEED_ADMIN_PASSWORD` / `SEED_KASIR_PASSWORD` / `SEED_DAPUR_PASSWORD` sebelum menjalankan `npm run db:seed` — jangan pakai password default `geprek123`.
-- Pertimbangkan migrasi dari SQLite ke PostgreSQL/MySQL untuk multi-user/multi-perangkat yang lebih andal.
-- Aktifkan HTTPS dan atur backup database berkala.
+- Pastikan backup otomatis database aktif (Neon/Supabase sudah menyediakan ini di paket gratis).
 
-Untuk panduan deploy ke hosting supaya bisa dijual/dipakai pelanggan sungguhan (termasuk checklist keamanan per pelanggan), lihat [DEPLOY.md](./DEPLOY.md).
+Untuk panduan deploy gratis ke Vercel + Neon supaya bisa dijual/dipakai pelanggan sungguhan (termasuk checklist keamanan per pelanggan), lihat [DEPLOY.md](./DEPLOY.md).
