@@ -61,12 +61,14 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 rounded-lg bg-gray-50 border border-gray-200 p-3 text-xs text-gray-500">
-          <p className="font-semibold mb-1">Akun demo:</p>
-          <p>admin / geprek123 (Pemilik)</p>
-          <p>kasir / geprek123 (Kasir)</p>
-          <p>dapur / geprek123 (Dapur)</p>
-        </div>
+        {process.env.NODE_ENV !== "production" && (
+          <div className="mt-6 rounded-lg bg-gray-50 border border-gray-200 p-3 text-xs text-gray-500">
+            <p className="font-semibold mb-1">Akun demo (hanya tampil di mode development):</p>
+            <p>admin / geprek123 (Pemilik)</p>
+            <p>kasir / geprek123 (Kasir)</p>
+            <p>dapur / geprek123 (Dapur)</p>
+          </div>
+        )}
       </div>
     </div>
   );

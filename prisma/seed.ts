@@ -29,13 +29,28 @@ async function main() {
   await prisma.restaurantTable.deleteMany();
   await prisma.user.deleteMany();
 
-  const passwordHash = await bcrypt.hash("geprek123", 10);
+  const defaultPassword = "geprek123";
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || defaultPassword;
+  const kasirPassword = process.env.SEED_KASIR_PASSWORD || defaultPassword;
+  const dapurPassword = process.env.SEED_DAPUR_PASSWORD || defaultPassword;
+
+  if (
+    process.env.NODE_ENV === "production" &&
+    (adminPassword === defaultPassword ||
+      kasirPassword === defaultPassword ||
+      dapurPassword === defaultPassword)
+  ) {
+    console.warn(
+      "\n!!! PERINGATAN: Anda sedang seed di production tanpa mengatur SEED_ADMIN_PASSWORD / SEED_KASIR_PASSWORD / SEED_DAPUR_PASSWORD.\n" +
+        "Password default 'geprek123' akan dipakai. WAJIB ganti password ini lewat menu Pegawai setelah login pertama kali.\n"
+    );
+  }
 
   const admin = await prisma.user.create({
     data: {
       name: "Rzqa (Pemilik)",
       username: "admin",
-      passwordHash,
+      passwordHash: await bcrypt.hash(adminPassword, 10),
       role: "ADMIN",
     },
   });
@@ -44,7 +59,7 @@ async function main() {
     data: {
       name: "Siti Kasir",
       username: "kasir",
-      passwordHash,
+      passwordHash: await bcrypt.hash(kasirPassword, 10),
       role: "KASIR",
     },
   });
@@ -53,7 +68,7 @@ async function main() {
     data: {
       name: "Budi Dapur",
       username: "dapur",
-      passwordHash,
+      passwordHash: await bcrypt.hash(dapurPassword, 10),
       role: "DAPUR",
     },
   });
@@ -253,9 +268,10 @@ async function main() {
   }
 
   console.log("Seeding selesai!");
-  console.log("Login admin: admin / geprek123");
-  console.log("Login kasir: kasir / geprek123");
-  console.log("Login dapur: dapur / geprek123");
+  console.log(`Login admin: admin / ${adminPassword}`);
+  console.log(`Login kasir: kasir / ${kasirPassword}`);
+  console.log(`Login dapur: dapur / ${dapurPassword}`);
+  console.log("Segera ganti password ini lewat menu Pegawai setelah login pertama kali.");
 
   void kasir;
   void dapur;

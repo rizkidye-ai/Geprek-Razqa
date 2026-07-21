@@ -100,5 +100,8 @@ Buka [http://localhost:3000](http://localhost:3000).
 Sebelum digunakan secara nyata untuk operasional warung:
 
 - Ganti `AUTH_SECRET` dengan nilai acak yang kuat dan rahasia.
+- Set `SEED_ADMIN_PASSWORD` / `SEED_KASIR_PASSWORD` / `SEED_DAPUR_PASSWORD` sebelum menjalankan `npm run db:seed` — jangan pakai password default `geprek123`.
 - Pertimbangkan migrasi dari SQLite ke PostgreSQL/MySQL untuk multi-user/multi-perangkat yang lebih andal.
 - Aktifkan HTTPS dan atur backup database berkala.
+
+Untuk panduan deploy ke hosting supaya bisa dijual/dipakai pelanggan sungguhan (termasuk checklist keamanan per pelanggan), lihat [DEPLOY.md](./DEPLOY.md).
