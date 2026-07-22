@@ -28,7 +28,7 @@ export default async function StokPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <form action={recordStockMovementAction} className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
+        <form action={recordStockMovementAction} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="text-sm font-semibold text-gray-800">Catat Stok Masuk / Keluar</h2>
           <select
             name="ingredientId"
@@ -62,12 +62,12 @@ export default async function StokPage() {
             placeholder="Catatan (mis. pembelian dari supplier, rusak, dsb.)"
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
           />
-          <SubmitButton className="w-full rounded-lg bg-orange-500 py-2 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60">
+          <SubmitButton className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 py-2 text-sm font-semibold text-white shadow-md shadow-orange-900/10 transition hover:shadow-lg hover:shadow-orange-900/20 disabled:opacity-60">
             Simpan
           </SubmitButton>
         </form>
 
-        <form action={createIngredientAction} className="space-y-3 rounded-xl bg-white p-4 shadow-sm">
+        <form action={createIngredientAction} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="text-sm font-semibold text-gray-800">Tambah Bahan Baku Baru</h2>
           <input
             name="name"
@@ -105,7 +105,7 @@ export default async function StokPage() {
         </form>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-100">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100 text-left text-xs uppercase text-gray-400">
@@ -159,7 +159,7 @@ export default async function StokPage() {
         </table>
       </div>
 
-      <div className="rounded-xl bg-white p-4 shadow-sm">
+      <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
         <h2 className="mb-3 text-sm font-semibold text-gray-800">Riwayat Stok Terbaru</h2>
         <div className="space-y-2">
           {movements.map((m) => (

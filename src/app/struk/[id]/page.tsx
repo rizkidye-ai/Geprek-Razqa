@@ -35,8 +35,16 @@ export default async function StrukPage({
           <PrintButton />
         </div>
 
-        <div className="rounded-xl bg-white p-6 shadow-sm font-mono text-sm">
+        <div className="rounded-2xl bg-white p-6 shadow-sm font-mono text-sm">
           <div className="mb-4 text-center">
+            {settings?.logoUrl && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={settings.logoUrl}
+                alt="Logo"
+                className="mx-auto mb-2 h-14 w-14 rounded-full object-cover"
+              />
+            )}
             <p className="text-base font-bold">{settings?.name ?? "Warung Makan Geprek Rzqa"}</p>
             {settings?.address && <p className="text-xs text-gray-500">{settings.address}</p>}
             {settings?.phone && <p className="text-xs text-gray-500">{settings.phone}</p>}

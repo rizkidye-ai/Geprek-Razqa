@@ -21,7 +21,7 @@ export default async function MejaPage() {
         <p className="text-sm text-gray-500">Kelola meja dine-in dan status ketersediaannya</p>
       </div>
 
-      <form action={createTableAction} className="flex max-w-md flex-wrap items-end gap-2 rounded-xl bg-white p-4 shadow-sm">
+      <form action={createTableAction} className="flex max-w-md flex-wrap items-end gap-2 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
         <div className="flex-1 min-w-[140px]">
           <label className="mb-1 block text-xs font-medium text-gray-600">Nama/Nomor Meja</label>
           <input
@@ -46,7 +46,7 @@ export default async function MejaPage() {
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {tables.map((t) => (
-          <div key={t.id} className="rounded-xl bg-white p-4 shadow-sm">
+          <div key={t.id} className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
             <div className="mb-2 flex items-center justify-between">
               <p className="font-semibold text-gray-900">{t.number}</p>
               <form action={deleteTableAction}>

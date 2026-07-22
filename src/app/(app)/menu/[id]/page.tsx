@@ -30,7 +30,7 @@ export default async function EditMenuPage({
       </Link>
       <h1 className="text-xl font-bold text-gray-900">Edit Menu: {item.name}</h1>
 
-      <form action={updateMenuItemAction} className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+      <form action={updateMenuItemAction} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
         <input type="hidden" name="id" value={item.id} />
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Nama Menu</label>

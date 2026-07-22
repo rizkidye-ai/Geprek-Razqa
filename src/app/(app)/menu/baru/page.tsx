@@ -18,7 +18,7 @@ export default async function TambahMenuPage() {
       </Link>
       <h1 className="text-xl font-bold text-gray-900">Tambah Menu Baru</h1>
 
-      <form action={createMenuItemAction} className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+      <form action={createMenuItemAction} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Nama Menu</label>
           <input

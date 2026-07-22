@@ -36,7 +36,15 @@ const navItems: NavItem[] = [
   { href: "/pengaturan", label: "Pengaturan", icon: <Settings size={18} />, roles: ["ADMIN"] },
 ];
 
-export function Sidebar({ role }: { role: string }) {
+export function Sidebar({
+  role,
+  storeName,
+  logoUrl,
+}: {
+  role: string;
+  storeName?: string | null;
+  logoUrl?: string | null;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -46,7 +54,7 @@ export function Sidebar({ role }: { role: string }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="no-print lg:hidden fixed top-3 left-3 z-40 rounded-md bg-white p-2 shadow border border-gray-200"
+        className="no-print lg:hidden fixed top-3 left-3 z-40 rounded-2xl bg-white p-2 shadow-md border border-gray-200"
         aria-label="Buka menu"
       >
         <Menu size={20} />
@@ -54,25 +62,32 @@ export function Sidebar({ role }: { role: string }) {
 
       {open && (
         <div
-          className="no-print fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="no-print fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       <aside
-        className={`no-print fixed z-50 lg:z-0 top-0 left-0 h-full w-64 bg-gray-900 text-gray-100 flex flex-col transition-transform lg:translate-x-0 lg:static ${
+        className={`no-print fixed z-50 lg:z-0 top-0 left-0 h-full w-64 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-900 text-gray-100 flex flex-col transition-transform duration-200 lg:translate-x-0 lg:static ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-800">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🍗</span>
-            <div>
-              <p className="font-bold text-sm leading-tight">Geprek Rzqa</p>
+        <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 text-lg shadow-lg shadow-orange-900/30">
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="Logo" className="h-full w-full object-cover" />
+              ) : (
+                <span>🍗</span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate font-bold text-sm leading-tight">{storeName || "Geprek Rzqa"}</p>
               <p className="text-[11px] text-gray-400 leading-tight">Manajemen Warung</p>
             </div>
           </div>
-          <button className="lg:hidden text-gray-400" onClick={() => setOpen(false)}>
+          <button className="lg:hidden text-gray-400 hover:text-white" onClick={() => setOpen(false)}>
             <X size={18} />
           </button>
         </div>
@@ -85,20 +100,22 @@ export function Sidebar({ role }: { role: string }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
+                className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
                   active
-                    ? "bg-orange-500 text-white font-medium"
-                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                    ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-md shadow-orange-900/30"
+                    : "text-gray-300 hover:bg-white/5 hover:text-white"
                 }`}
               >
-                {item.icon}
+                <span className={active ? "" : "text-gray-400 group-hover:text-orange-400 transition-colors"}>
+                  {item.icon}
+                </span>
                 {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-3 py-3 border-t border-gray-800 text-[11px] text-gray-500">
+        <div className="px-4 py-3 border-t border-white/10 text-[11px] text-gray-500">
           Peran aktif: <span className="text-gray-300 font-medium">{role}</span>
         </div>
       </aside>

@@ -25,7 +25,7 @@ export default async function PegawaiPage() {
         <p className="text-sm text-gray-500">Kelola akun admin, kasir, dan dapur</p>
       </div>
 
-      <form action={createUserAction} className="grid max-w-2xl grid-cols-1 gap-3 rounded-xl bg-white p-4 shadow-sm sm:grid-cols-4">
+      <form action={createUserAction} className="grid max-w-2xl grid-cols-1 gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100 sm:grid-cols-4">
         <input
           name="name"
           required
@@ -54,7 +54,7 @@ export default async function PegawaiPage() {
         <SubmitButton>Tambah Pegawai</SubmitButton>
       </form>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-100">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100 text-left text-xs uppercase text-gray-400">

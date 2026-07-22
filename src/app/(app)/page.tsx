@@ -43,12 +43,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl bg-white p-4 shadow-sm">
+        <div className="lg:col-span-2 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="mb-3 text-sm font-semibold text-gray-800">Penjualan 7 Hari Terakhir</h2>
           <SalesChart data={data.chartData} />
         </div>
 
-        <div className="rounded-xl bg-white p-4 shadow-sm">
+        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="mb-3 text-sm font-semibold text-gray-800">Menu Terlaris</h2>
           {data.topMenu.length === 0 ? (
             <p className="text-sm text-gray-400">Belum ada data penjualan.</p>
@@ -78,7 +78,7 @@ export default async function DashboardPage() {
           </div>
           <ul className="grid grid-cols-2 gap-2 text-sm text-red-700 lg:grid-cols-4">
             {data.lowStock.map((i) => (
-              <li key={i.id} className="rounded-lg bg-white px-3 py-2 shadow-sm">
+              <li key={i.id} className="rounded-lg bg-white px-3 py-2 shadow-sm ring-1 ring-gray-100">
                 <p className="font-medium">{i.name}</p>
                 <p className="text-xs text-red-500">
                   Sisa {i.stock} {i.unit} (min. {i.minStock} {i.unit})

@@ -37,6 +37,7 @@ export function KasirClient({
   const [cashReceived, setCashReceived] = useState("");
   const [error, setError] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [search, setSearch] = useState("");
 
   const categories = useMemo(() => {
     const map = new Map<string, string>();
@@ -44,8 +45,11 @@ export function KasirClient({
     return Array.from(map.entries());
   }, [menuItems]);
 
-  const filteredMenu =
-    activeCategory === "all" ? menuItems : menuItems.filter((m) => m.categoryId === activeCategory);
+  const filteredMenu = menuItems.filter((m) => {
+    const matchesCategory = activeCategory === "all" || m.categoryId === activeCategory;
+    const matchesSearch = m.name.toLowerCase().includes(search.trim().toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const addToCart = (id: string) => {
     setCart((prev) => ({
@@ -82,6 +86,19 @@ export function KasirClient({
 
   const cashReceivedNum = parseInt(cashReceived || "0", 10);
   const change = cashReceivedNum - total;
+
+  const quickCashOptions = useMemo(() => {
+    if (total <= 0) return [];
+    const denominations = [5000, 10000, 20000, 50000, 100000];
+    const options = new Set<number>([total]);
+    for (const d of denominations) {
+      const rounded = Math.ceil(total / d) * d;
+      if (rounded > total) options.add(rounded);
+    }
+    return Array.from(options)
+      .sort((a, b) => a - b)
+      .slice(0, 5);
+  }, [total]);
 
   const handleSubmit = () => {
     setError("");
@@ -124,6 +141,12 @@ export function KasirClient({
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       <div className="lg:col-span-2 space-y-3">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Cari menu... (mis. geprek, es teh)"
+          className="w-full rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-400"
+        />
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveCategory("all")}
@@ -153,7 +176,7 @@ export function KasirClient({
             <button
               key={m.id}
               onClick={() => addToCart(m.id)}
-              className="rounded-xl bg-white p-3 text-left shadow-sm hover:shadow-md hover:ring-2 hover:ring-orange-300 transition"
+              className="rounded-2xl bg-white p-3 text-left shadow-sm ring-1 ring-gray-100 hover:shadow-md hover:ring-2 hover:ring-orange-300 transition"
             >
               <p className="text-sm font-semibold text-gray-900">{m.name}</p>
               <p className="mt-1 text-xs text-gray-500">{formatRupiah(m.price)}</p>
@@ -170,7 +193,7 @@ export function KasirClient({
         </div>
       </div>
 
-      <div className="rounded-xl bg-white p-4 shadow-sm h-fit lg:sticky lg:top-20">
+      <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100 h-fit lg:sticky lg:top-20">
         <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
           <ShoppingCart size={16} /> Keranjang
         </h2>
@@ -286,7 +309,7 @@ export function KasirClient({
         </div>
 
         {paymentMethod === "TUNAI" && (
-          <div className="mb-3 space-y-1">
+          <div className="mb-3 space-y-2">
             <input
               value={cashReceived}
               onChange={(e) => setCashReceived(e.target.value)}
@@ -295,6 +318,24 @@ export function KasirClient({
               placeholder="Uang diterima"
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
             />
+            {quickCashOptions.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {quickCashOptions.map((amount) => (
+                  <button
+                    key={amount}
+                    type="button"
+                    onClick={() => setCashReceived(String(amount))}
+                    className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                      cashReceivedNum === amount
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
+                  >
+                    {amount === total ? "Uang Pas" : formatRupiah(amount)}
+                  </button>
+                ))}
+              </div>
+            )}
             {cashReceived && (
               <p className={`text-xs ${change < 0 ? "text-red-500" : "text-gray-500"}`}>
                 Kembalian: {formatRupiah(Math.max(change, 0))}
@@ -315,7 +356,7 @@ export function KasirClient({
         <button
           onClick={handleSubmit}
           disabled={isPending}
-          className="w-full rounded-lg bg-orange-500 py-2.5 text-sm font-semibold text-white hover:bg-orange-600 disabled:opacity-60"
+          className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-900/20 transition hover:shadow-orange-900/30 disabled:opacity-60"
         >
           {isPending ? "Memproses..." : "Buat Pesanan & Bayar"}
         </button>

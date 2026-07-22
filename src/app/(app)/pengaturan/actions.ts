@@ -14,15 +14,32 @@ export async function updateSettingsAction(formData: FormData) {
   const address = String(formData.get("address") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const footer = String(formData.get("footer") ?? "").trim();
+  const removeLogo = formData.get("removeLogo") === "on";
+  const logoFile = formData.get("logo");
 
   const existing = await prisma.settings.findFirst();
+  let logoUrl = existing?.logoUrl ?? null;
+
+  if (removeLogo) {
+    logoUrl = null;
+  } else if (logoFile instanceof File && logoFile.size > 0) {
+    if (!logoFile.type.startsWith("image/")) {
+      throw new Error("File logo harus berupa gambar.");
+    }
+    if (logoFile.size > 1_000_000) {
+      throw new Error("Ukuran logo maksimal 1MB.");
+    }
+    const buffer = Buffer.from(await logoFile.arrayBuffer());
+    logoUrl = `data:${logoFile.type};base64,${buffer.toString("base64")}`;
+  }
+
   if (existing) {
     await prisma.settings.update({
       where: { id: existing.id },
-      data: { name, address, phone, footer },
+      data: { name, address, phone, footer, logoUrl },
     });
   } else {
-    await prisma.settings.create({ data: { name, address, phone, footer } });
+    await prisma.settings.create({ data: { name, address, phone, footer, logoUrl } });
   }
 
   revalidatePath("/pengaturan");

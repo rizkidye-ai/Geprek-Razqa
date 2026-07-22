@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { SubmitButton } from "@/components/SubmitButton";
+import { LogoUploadField } from "@/components/LogoUploadField";
 import { updateSettingsAction } from "./actions";
 
 export default async function PengaturanPage() {
@@ -12,7 +13,8 @@ export default async function PengaturanPage() {
         <p className="text-sm text-gray-500">Informasi ini tampil di struk pembayaran</p>
       </div>
 
-      <form action={updateSettingsAction} className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+      <form action={updateSettingsAction} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
+        <LogoUploadField currentLogoUrl={settings?.logoUrl ?? null} />
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Nama Warung</label>
           <input

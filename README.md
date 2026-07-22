@@ -12,7 +12,7 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Manajemen Meja** — status meja kosong/terisi yang otomatis diperbarui mengikuti alur pesanan.
 - **Laporan Penjualan** — filter periode tanggal, grafik omzet harian, rincian metode pembayaran, menu terlaris, dan export CSV.
 - **Manajemen Pegawai** — akun dengan tiga peran (Admin/Pemilik, Kasir, Dapur), reset password, aktif/nonaktifkan akun.
-- **Pengaturan Warung** — nama, alamat, telepon, dan catatan kaki struk.
+- **Pengaturan Warung** — nama, alamat, telepon, logo, dan catatan kaki struk. Logo otomatis tampil di sidebar, halaman login, dan struk.
 
 ## Peran Pengguna
 

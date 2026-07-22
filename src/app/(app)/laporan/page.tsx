@@ -67,11 +67,11 @@ export default async function LaporanPage({
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2 rounded-xl bg-white p-4 shadow-sm">
+        <div className="lg:col-span-2 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="mb-3 text-sm font-semibold text-gray-800">Grafik Omzet Harian</h2>
           <SalesChart data={report.chartData} />
         </div>
-        <div className="rounded-xl bg-white p-4 shadow-sm">
+        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="mb-3 text-sm font-semibold text-gray-800">Menu Terlaris (Periode Ini)</h2>
           <div className="space-y-2">
             {report.topMenu.map((m, idx) => (
@@ -89,7 +89,7 @@ export default async function LaporanPage({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-100">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100 text-left text-xs uppercase text-gray-400">
