@@ -19,6 +19,7 @@ async function main() {
   });
 
   // ---------- Users ----------
+  await prisma.expense.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.payment.deleteMany();
   await prisma.orderItem.deleteMany();
@@ -85,20 +86,20 @@ async function main() {
 
   // ---------- Bahan Baku ----------
   const ingredientData = [
-    { name: "Ayam Fillet", unit: "gram", stock: 15000, minStock: 3000 },
-    { name: "Tepung Kremes", unit: "gram", stock: 8000, minStock: 2000 },
-    { name: "Cabai Rawit", unit: "gram", stock: 5000, minStock: 1000 },
-    { name: "Bawang Putih", unit: "gram", stock: 3000, minStock: 500 },
-    { name: "Minyak Goreng", unit: "ml", stock: 10000, minStock: 2000 },
-    { name: "Beras", unit: "gram", stock: 25000, minStock: 5000 },
-    { name: "Tahu", unit: "potong", stock: 100, minStock: 20 },
-    { name: "Tempe", unit: "potong", stock: 100, minStock: 20 },
-    { name: "Telur", unit: "butir", stock: 80, minStock: 15 },
-    { name: "Terong", unit: "buah", stock: 40, minStock: 10 },
-    { name: "Es Batu", unit: "gram", stock: 20000, minStock: 3000 },
-    { name: "Teh Celup", unit: "kantong", stock: 100, minStock: 15 },
-    { name: "Jeruk Nipis", unit: "buah", stock: 50, minStock: 10 },
-    { name: "Gula Pasir", unit: "gram", stock: 5000, minStock: 1000 },
+    { name: "Ayam Fillet", unit: "gram", stock: 15000, minStock: 3000, costPerUnit: 35 },
+    { name: "Tepung Kremes", unit: "gram", stock: 8000, minStock: 2000, costPerUnit: 15 },
+    { name: "Cabai Rawit", unit: "gram", stock: 5000, minStock: 1000, costPerUnit: 60 },
+    { name: "Bawang Putih", unit: "gram", stock: 3000, minStock: 500, costPerUnit: 40 },
+    { name: "Minyak Goreng", unit: "ml", stock: 10000, minStock: 2000, costPerUnit: 16 },
+    { name: "Beras", unit: "gram", stock: 25000, minStock: 5000, costPerUnit: 12 },
+    { name: "Tahu", unit: "potong", stock: 100, minStock: 20, costPerUnit: 500 },
+    { name: "Tempe", unit: "potong", stock: 100, minStock: 20, costPerUnit: 500 },
+    { name: "Telur", unit: "butir", stock: 80, minStock: 15, costPerUnit: 2000 },
+    { name: "Terong", unit: "buah", stock: 40, minStock: 10, costPerUnit: 1500 },
+    { name: "Es Batu", unit: "gram", stock: 20000, minStock: 3000, costPerUnit: 2 },
+    { name: "Teh Celup", unit: "kantong", stock: 100, minStock: 15, costPerUnit: 300 },
+    { name: "Jeruk Nipis", unit: "buah", stock: 50, minStock: 10, costPerUnit: 1000 },
+    { name: "Gula Pasir", unit: "gram", stock: 5000, minStock: 1000, costPerUnit: 14 },
   ];
   const ing: Record<string, string> = {};
   for (const i of ingredientData) {
@@ -264,6 +265,62 @@ async function main() {
         number: `Meja ${i}`,
         capacity: i % 3 === 0 ? 6 : 4,
         status: "KOSONG",
+      },
+    });
+  }
+
+  // ---------- CAPEX & OPEX ----------
+  const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+
+  const expenseData: {
+    type: "CAPEX" | "OPEX";
+    category: string;
+    description: string;
+    amount: number;
+    date: Date;
+  }[] = [
+    // CAPEX: modal awal / investasi peralatan
+    {
+      type: "CAPEX",
+      category: "Peralatan Dapur",
+      description: "Kompor gas, wajan, penggorengan, perlengkapan masak",
+      amount: 15_000_000,
+      date: daysAgo(180),
+    },
+    {
+      type: "CAPEX",
+      category: "Renovasi Tempat",
+      description: "Renovasi dapur dan ruang makan",
+      amount: 10_000_000,
+      date: daysAgo(180),
+    },
+    {
+      type: "CAPEX",
+      category: "Meja & Kursi",
+      description: "Etalase, meja, dan kursi pelanggan",
+      amount: 8_000_000,
+      date: daysAgo(170),
+    },
+    // OPEX: biaya operasional rutin (2 bulan terakhir)
+    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(45) },
+    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 800_000, date: daysAgo(40) },
+    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(38) },
+    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(35) },
+    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(15) },
+    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 850_000, date: daysAgo(10) },
+    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(8) },
+    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(5) },
+  ];
+
+  for (const e of expenseData) {
+    await prisma.expense.create({
+      data: {
+        type: e.type,
+        category: e.category,
+        description: e.description,
+        amount: e.amount,
+        date: e.date,
+        createdById: admin.id,
       },
     });
   }

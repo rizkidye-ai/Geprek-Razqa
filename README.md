@@ -13,12 +13,18 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Laporan Penjualan** — filter periode tanggal, grafik omzet harian, rincian metode pembayaran, menu terlaris, dan export CSV.
 - **Manajemen Pegawai** — akun dengan tiga peran (Admin/Pemilik, Kasir, Dapur), reset password, aktif/nonaktifkan akun.
 - **Pengaturan Warung** — nama, alamat, telepon, logo, dan catatan kaki struk. Logo otomatis tampil di sidebar, halaman login, dan struk.
+- **Keuangan** (khusus Admin):
+  - **HPP** — biaya bahan baku per menu (dari resep × biaya bahan) dibanding harga jual, dengan margin per item.
+  - **CAPEX & OPEX** — catat pengeluaran modal/investasi dan biaya operasional rutin.
+  - **Arus Kas** — kas masuk (penjualan) vs kas keluar (CAPEX+OPEX) per periode, lengkap grafik harian.
+  - **Laba Rugi** — Pendapatan − HPP = Laba Kotor − OPEX = Laba Bersih, per periode.
+  - **BEP, ROI & Kelayakan Bisnis** — titik impas (unit & Rupiah), ROI dari investasi CAPEX, estimasi payback period, dan indikasi kelayakan bisnis.
 
 ## Peran Pengguna
 
 | Peran | Akses |
 |---|---|
-| **Admin (Pemilik)** | Semua fitur, termasuk menu, laporan, pegawai, dan pengaturan |
+| **Admin (Pemilik)** | Semua fitur, termasuk menu, laporan, keuangan, pegawai, dan pengaturan |
 | **Kasir** | Dashboard, Kasir/POS, Pesanan, Meja, Stok |
 | **Dapur** | Dashboard, Pesanan & Dapur (update status pesanan) |
 
@@ -97,7 +103,9 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Model Data Inti
 
-`User` (peran) · `Category` & `MenuItem` (menu) · `Ingredient` & `MenuIngredient` (bahan baku & resep/BOM) · `RestaurantTable` (meja) · `Order` & `OrderItem` (pesanan) · `Payment` (pembayaran) · `StockMovement` (riwayat stok) · `Settings` (info warung untuk struk).
+`User` (peran) · `Category` & `MenuItem` (menu) · `Ingredient` & `MenuIngredient` (bahan baku & resep/BOM, termasuk `costPerUnit` untuk HPP) · `RestaurantTable` (meja) · `Order` & `OrderItem` (pesanan) · `Payment` (pembayaran) · `StockMovement` (riwayat stok) · `Expense` (CAPEX/OPEX) · `Settings` (info warung untuk struk).
+
+> **Penting untuk laporan Keuangan**: isi `costPerUnit` (biaya per satuan) tiap bahan baku di halaman **Stok Bahan Baku** supaya perhitungan HPP, Laba Rugi, dan BEP/ROI akurat. Data seed sudah menyertakan contoh biaya dan beberapa transaksi CAPEX/OPEX untuk demo.
 
 ## Catatan Produksi
 

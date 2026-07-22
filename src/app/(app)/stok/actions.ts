@@ -18,6 +18,7 @@ export async function createIngredientAction(formData: FormData) {
   const unit = String(formData.get("unit") ?? "").trim();
   const stock = parseFloat(String(formData.get("stock") ?? "0"));
   const minStock = parseFloat(String(formData.get("minStock") ?? "0"));
+  const costPerUnit = parseFloat(String(formData.get("costPerUnit") ?? "0"));
 
   if (!name || !unit) throw new Error("Nama dan satuan wajib diisi.");
 
@@ -27,20 +28,27 @@ export async function createIngredientAction(formData: FormData) {
       unit,
       stock: Number.isNaN(stock) ? 0 : stock,
       minStock: Number.isNaN(minStock) ? 0 : minStock,
+      costPerUnit: Number.isNaN(costPerUnit) ? 0 : costPerUnit,
     },
   });
   revalidatePath("/stok");
+  revalidatePath("/keuangan/hpp");
 }
 
 export async function updateIngredientAction(formData: FormData) {
   await requireStaff();
   const id = String(formData.get("id") ?? "");
   const minStock = parseFloat(String(formData.get("minStock") ?? "0"));
+  const costPerUnit = parseFloat(String(formData.get("costPerUnit") ?? "0"));
   await prisma.ingredient.update({
     where: { id },
-    data: { minStock: Number.isNaN(minStock) ? 0 : minStock },
+    data: {
+      minStock: Number.isNaN(minStock) ? 0 : minStock,
+      costPerUnit: Number.isNaN(costPerUnit) ? 0 : costPerUnit,
+    },
   });
   revalidatePath("/stok");
+  revalidatePath("/keuangan/hpp");
 }
 
 export async function deleteIngredientAction(formData: FormData) {

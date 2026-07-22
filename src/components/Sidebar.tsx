@@ -15,6 +15,11 @@ import {
   Settings,
   Menu,
   X,
+  Calculator,
+  Receipt,
+  Wallet,
+  TrendingUp,
+  Target,
 } from "lucide-react";
 
 type NavItem = {
@@ -36,6 +41,14 @@ const navItems: NavItem[] = [
   { href: "/pengaturan", label: "Pengaturan", icon: <Settings size={18} />, roles: ["ADMIN"] },
 ];
 
+const financeNavItems: NavItem[] = [
+  { href: "/keuangan/hpp", label: "HPP", icon: <Calculator size={18} />, roles: ["ADMIN"] },
+  { href: "/keuangan/pengeluaran", label: "CAPEX & OPEX", icon: <Receipt size={18} />, roles: ["ADMIN"] },
+  { href: "/keuangan/arus-kas", label: "Arus Kas", icon: <Wallet size={18} />, roles: ["ADMIN"] },
+  { href: "/keuangan/laba-rugi", label: "Laba Rugi", icon: <TrendingUp size={18} />, roles: ["ADMIN"] },
+  { href: "/keuangan/kelayakan", label: "BEP, ROI & Kelayakan", icon: <Target size={18} />, roles: ["ADMIN"] },
+];
+
 export function Sidebar({
   role,
   storeName,
@@ -49,6 +62,7 @@ export function Sidebar({
   const [open, setOpen] = useState(false);
 
   const items = navItems.filter((item) => item.roles.includes(role));
+  const financeItems = financeNavItems.filter((item) => item.roles.includes(role));
 
   return (
     <>
@@ -113,6 +127,34 @@ export function Sidebar({
               </Link>
             );
           })}
+
+          {financeItems.length > 0 && (
+            <>
+              <p className="mt-4 mb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                Keuangan
+              </p>
+              {financeItems.map((item) => {
+                const active = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
+                      active
+                        ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-md shadow-orange-900/30"
+                        : "text-gray-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <span className={active ? "" : "text-gray-400 group-hover:text-orange-400 transition-colors"}>
+                      {item.icon}
+                    </span>
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </>
+          )}
         </nav>
 
         <div className="px-4 py-3 border-t border-white/10 text-[11px] text-gray-500">

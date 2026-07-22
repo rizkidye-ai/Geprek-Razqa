@@ -42,6 +42,11 @@ enum StockMovementType {
   KELUAR
 }
 
+enum ExpenseType {
+  CAPEX
+  OPEX
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -55,6 +60,7 @@ model User {
   orders          Order[]         @relation("OrderCreatedBy")
   payments        Payment[]       @relation("PaymentCashier")
   stockMovements  StockMovement[] @relation("StockMovementCreatedBy")
+  expenses        Expense[]       @relation("ExpenseCreatedBy")
 }
 
 model Category {
@@ -80,13 +86,14 @@ model MenuItem {
 }
 
 model Ingredient {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  unit      String
-  stock     Float    @default(0)
-  minStock  Float    @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  name         String   @unique
+  unit         String
+  stock        Float    @default(0)
+  minStock     Float    @default(0)
+  costPerUnit  Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   menuItems      MenuIngredient[]
   stockMovements StockMovement[]
@@ -167,6 +174,19 @@ model StockMovement {
 
   ingredient Ingredient @relation(fields: [ingredientId], references: [id])
   createdBy  User       @relation("StockMovementCreatedBy", fields: [createdById], references: [id])
+}
+
+model Expense {
+  id          String      @id @default(cuid())
+  type        ExpenseType
+  category    String
+  description String?
+  amount      Int
+  date        DateTime    @default(now())
+  createdById String
+  createdAt   DateTime    @default(now())
+
+  createdBy User @relation("ExpenseCreatedBy", fields: [createdById], references: [id])
 }
 
 model Settings {

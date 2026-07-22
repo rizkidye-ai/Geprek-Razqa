@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Save, Trash2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -6,6 +6,7 @@ import {
   createIngredientAction,
   deleteIngredientAction,
   recordStockMovementAction,
+  updateIngredientAction,
 } from "./actions";
 
 export default async function StokPage() {
@@ -99,6 +100,14 @@ export default async function StokPage() {
               className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
             />
           </div>
+          <input
+            name="costPerUnit"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder="Biaya per satuan (Rp), mis. harga per gram"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+          />
           <SubmitButton className="w-full rounded-lg bg-gray-800 py-2 text-sm font-semibold text-white hover:bg-gray-700 disabled:opacity-60">
             Tambah Bahan
           </SubmitButton>
@@ -112,6 +121,7 @@ export default async function StokPage() {
               <th className="px-4 py-3">Bahan Baku</th>
               <th className="px-4 py-3">Stok Saat Ini</th>
               <th className="px-4 py-3">Stok Minimum</th>
+              <th className="px-4 py-3">Biaya per Satuan</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3 text-right">Aksi</th>
             </tr>
@@ -127,6 +137,29 @@ export default async function StokPage() {
                   </td>
                   <td className="px-4 py-3 text-gray-600">
                     {i.minStock} {i.unit}
+                  </td>
+                  <td className="px-4 py-3">
+                    <form action={updateIngredientAction} className="flex items-center gap-1">
+                      <input type="hidden" name="id" value={i.id} />
+                      <input type="hidden" name="minStock" value={i.minStock} />
+                      <span className="text-xs text-gray-400">Rp</span>
+                      <input
+                        name="costPerUnit"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        defaultValue={i.costPerUnit}
+                        className="w-20 rounded border border-gray-200 px-1.5 py-1 text-xs"
+                      />
+                      <span className="text-xs text-gray-400">/{i.unit}</span>
+                      <button
+                        type="submit"
+                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                        title="Simpan biaya"
+                      >
+                        <Save size={13} />
+                      </button>
+                    </form>
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -150,7 +183,7 @@ export default async function StokPage() {
             })}
             {ingredients.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
                   Belum ada bahan baku.
                 </td>
               </tr>

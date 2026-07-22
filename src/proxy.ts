@@ -12,6 +12,7 @@ const roleAccess: Record<string, string[]> = {
   "/pegawai": ["ADMIN"],
   "/pengaturan": ["ADMIN"],
   "/struk": ["ADMIN", "KASIR"],
+  "/keuangan": ["ADMIN"],
 };
 
 function matchPath(pathname: string) {
