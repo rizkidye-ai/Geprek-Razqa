@@ -17,7 +17,7 @@ export type CreateOrderPayload = {
   customerName?: string;
   note?: string;
   items: CartItem[];
-  paymentMethod: "TUNAI" | "QRIS" | "TRANSFER";
+  paymentMethod?: "TUNAI" | "QRIS" | "TRANSFER";
   cashReceived?: number;
 };
 
@@ -32,6 +32,9 @@ export async function createOrderAction(payload: CreateOrderPayload) {
   }
   if (payload.orderType === "DINE_IN" && !payload.tableId) {
     throw new Error("Pilih meja untuk pesanan dine-in.");
+  }
+  if (payload.orderType === "TAKEAWAY" && !payload.paymentMethod) {
+    throw new Error("Pesanan bawa pulang harus dibayar di muka.");
   }
 
   const menuItems = await prisma.menuItem.findMany({
@@ -99,14 +102,18 @@ export async function createOrderAction(payload: CreateOrderPayload) {
         status: "BARU",
         createdById: session.user.id,
         items: { create: orderItemsData },
-        payment: {
-          create: {
-            method: payload.paymentMethod,
-            amount: total,
-            cashReceived: payload.paymentMethod === "TUNAI" ? payload.cashReceived : null,
-            cashierId: session.user.id,
-          },
-        },
+        ...(payload.paymentMethod
+          ? {
+              payment: {
+                create: {
+                  method: payload.paymentMethod,
+                  amount: total,
+                  cashReceived: payload.paymentMethod === "TUNAI" ? payload.cashReceived : null,
+                  cashierId: session.user.id,
+                },
+              },
+            }
+          : {}),
       },
     });
 

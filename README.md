@@ -5,8 +5,8 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 ## Fitur Utama
 
 - **Dashboard** — omzet hari ini, jumlah pesanan per status, menu terlaris, grafik penjualan 7 hari, dan peringatan stok menipis.
-- **Kasir (POS)** — pilih menu per kategori, keranjang belanja interaktif, pilih meja (dine-in) atau bawa pulang, hitung kembalian tunai, cetak struk.
-- **Pesanan & Dapur** — papan status pesanan (Baru → Diproses → Siap → Selesai) untuk alur kerja dapur, lengkap dengan pembatalan pesanan.
+- **Kasir (POS)** — pilih menu per kategori (dengan pencarian cepat), keranjang belanja interaktif, pilih meja (dine-in) atau bawa pulang, tombol uang cepat, hitung kembalian tunai, cetak struk. Untuk dine-in tersedia opsi **Bayar Nanti** (bayar saat pelanggan pulang).
+- **Pesanan & Dapur** — papan status pesanan (Baru → Diproses → Siap → Selesai) untuk alur kerja dapur, lengkap dengan pembatalan pesanan dan tombol Bayar untuk pesanan dine-in yang belum dibayar.
 - **Menu & Resep** — CRUD menu dan kategori, serta resep bahan baku (BOM) per porsi sehingga stok otomatis berkurang saat pesanan dibuat.
 - **Stok Bahan Baku** — catat stok masuk/keluar, ambang batas stok minimum, riwayat pergerakan stok, dan peringatan otomatis saat menipis.
 - **Manajemen Meja** — status meja kosong/terisi yang otomatis diperbarui mengikuti alur pesanan.
@@ -69,8 +69,8 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Alur Kerja Aplikasi
 
-1. **Kasir** membuat pesanan baru di halaman **Kasir (POS)**: pilih menu, tentukan meja/bawa pulang, pilih metode pembayaran, lalu simpan. Stok bahan baku otomatis berkurang sesuai resep, meja otomatis ditandai terisi, dan struk siap dicetak.
-2. **Dapur** memantau pesanan masuk di halaman **Pesanan & Dapur** dan memperbarui status seiring proses memasak: Baru → Diproses → Siap → Selesai.
+1. **Kasir** membuat pesanan baru di halaman **Kasir (POS)**: pilih menu, tentukan meja/bawa pulang, pilih metode pembayaran (atau **Bayar Nanti** untuk dine-in), lalu simpan. Stok bahan baku otomatis berkurang sesuai resep, meja otomatis ditandai terisi, dan struk siap dicetak.
+2. **Dapur** memantau pesanan masuk di halaman **Pesanan & Dapur** dan memperbarui status seiring proses memasak: Baru → Diproses → Siap → Selesai. Untuk pesanan dine-in yang dipilih "Bayar Nanti", tahap Selesai baru bisa ditandai setelah kasir memproses pembayaran lewat tombol **Bayar**.
 3. Saat pesanan **Selesai**, meja dine-in otomatis kembali berstatus kosong jika tidak ada pesanan aktif lain di meja tersebut.
 4. Pesanan dapat **dibatalkan** (oleh Admin/Kasir) selama belum selesai — stok bahan baku yang telah dipakai akan dikembalikan secara otomatis.
 5. **Admin** memantau performa warung lewat **Dashboard** dan **Laporan Penjualan**, mengelola **Menu & Resep**, **Stok**, **Pegawai**, dan **Pengaturan** warung.

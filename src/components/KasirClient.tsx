@@ -35,6 +35,7 @@ export function KasirClient({
   const [customerName, setCustomerName] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"TUNAI" | "QRIS" | "TRANSFER">("TUNAI");
   const [cashReceived, setCashReceived] = useState("");
+  const [payLater, setPayLater] = useState(false);
   const [error, setError] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -110,7 +111,8 @@ export function KasirClient({
       setError("Pilih meja terlebih dahulu.");
       return;
     }
-    if (paymentMethod === "TUNAI" && (Number.isNaN(cashReceivedNum) || cashReceivedNum < total)) {
+    const willPayNow = !(orderType === "DINE_IN" && payLater);
+    if (willPayNow && paymentMethod === "TUNAI" && (Number.isNaN(cashReceivedNum) || cashReceivedNum < total)) {
       setError("Uang tunai kurang dari total belanja.");
       return;
     }
@@ -128,8 +130,8 @@ export function KasirClient({
           tableId: orderType === "DINE_IN" ? tableId : undefined,
           customerName: customerName || undefined,
           items,
-          paymentMethod,
-          cashReceived: paymentMethod === "TUNAI" ? cashReceivedNum : undefined,
+          paymentMethod: willPayNow ? paymentMethod : undefined,
+          cashReceived: willPayNow && paymentMethod === "TUNAI" ? cashReceivedNum : undefined,
         });
         router.push(`/struk/${result.orderId}`);
       } catch (e) {
@@ -208,7 +210,10 @@ export function KasirClient({
             Makan di Tempat
           </button>
           <button
-            onClick={() => setOrderType("TAKEAWAY")}
+            onClick={() => {
+              setOrderType("TAKEAWAY");
+              setPayLater(false);
+            }}
             className={`flex-1 rounded-lg py-1.5 text-xs font-medium ${
               orderType === "TAKEAWAY" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"
             }`}
@@ -218,18 +223,39 @@ export function KasirClient({
         </div>
 
         {orderType === "DINE_IN" && (
-          <select
-            value={tableId}
-            onChange={(e) => setTableId(e.target.value)}
-            className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          >
-            <option value="">Pilih meja</option>
-            {tables.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.number} {t.status === "TERISI" ? "(terisi)" : ""}
-              </option>
-            ))}
-          </select>
+          <>
+            <select
+              value={tableId}
+              onChange={(e) => setTableId(e.target.value)}
+              className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+            >
+              <option value="">Pilih meja</option>
+              {tables.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.number} {t.status === "TERISI" ? "(terisi)" : ""}
+                </option>
+              ))}
+            </select>
+
+            <div className="mb-3 flex gap-2">
+              <button
+                onClick={() => setPayLater(false)}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-medium ${
+                  !payLater ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                Bayar Sekarang
+              </button>
+              <button
+                onClick={() => setPayLater(true)}
+                className={`flex-1 rounded-lg py-1.5 text-xs font-medium ${
+                  payLater ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                Bayar Saat Pulang
+              </button>
+            </div>
+          </>
         )}
 
         <input
@@ -294,54 +320,63 @@ export function KasirClient({
           <span>{formatRupiah(total)}</span>
         </div>
 
-        <div className="mb-3 grid grid-cols-3 gap-2">
-          {(["TUNAI", "QRIS", "TRANSFER"] as const).map((method) => (
-            <button
-              key={method}
-              onClick={() => setPaymentMethod(method)}
-              className={`rounded-lg py-1.5 text-xs font-medium ${
-                paymentMethod === method ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {method}
-            </button>
-          ))}
-        </div>
+        {payLater ? (
+          <div className="mb-3 rounded-lg bg-blue-50 border border-blue-100 px-3 py-2 text-xs text-blue-700">
+            Pesanan akan dikirim ke dapur tanpa pembayaran. Kasir memproses pembayaran nanti di
+            halaman <span className="font-medium">Pesanan &amp; Dapur</span> saat pelanggan pulang.
+          </div>
+        ) : (
+          <>
+            <div className="mb-3 grid grid-cols-3 gap-2">
+              {(["TUNAI", "QRIS", "TRANSFER"] as const).map((method) => (
+                <button
+                  key={method}
+                  onClick={() => setPaymentMethod(method)}
+                  className={`rounded-lg py-1.5 text-xs font-medium ${
+                    paymentMethod === method ? "bg-orange-500 text-white" : "bg-gray-100 text-gray-600"
+                  }`}
+                >
+                  {method}
+                </button>
+              ))}
+            </div>
 
-        {paymentMethod === "TUNAI" && (
-          <div className="mb-3 space-y-2">
-            <input
-              value={cashReceived}
-              onChange={(e) => setCashReceived(e.target.value)}
-              type="number"
-              min="0"
-              placeholder="Uang diterima"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-            {quickCashOptions.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {quickCashOptions.map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => setCashReceived(String(amount))}
-                    className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-                      cashReceivedNum === amount
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                    }`}
-                  >
-                    {amount === total ? "Uang Pas" : formatRupiah(amount)}
-                  </button>
-                ))}
+            {paymentMethod === "TUNAI" && (
+              <div className="mb-3 space-y-2">
+                <input
+                  value={cashReceived}
+                  onChange={(e) => setCashReceived(e.target.value)}
+                  type="number"
+                  min="0"
+                  placeholder="Uang diterima"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                />
+                {quickCashOptions.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {quickCashOptions.map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => setCashReceived(String(amount))}
+                        className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                          cashReceivedNum === amount
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        }`}
+                      >
+                        {amount === total ? "Uang Pas" : formatRupiah(amount)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {cashReceived && (
+                  <p className={`text-xs ${change < 0 ? "text-red-500" : "text-gray-500"}`}>
+                    Kembalian: {formatRupiah(Math.max(change, 0))}
+                  </p>
+                )}
               </div>
             )}
-            {cashReceived && (
-              <p className={`text-xs ${change < 0 ? "text-red-500" : "text-gray-500"}`}>
-                Kembalian: {formatRupiah(Math.max(change, 0))}
-              </p>
-            )}
-          </div>
+          </>
         )}
 
         {error && (
@@ -358,7 +393,7 @@ export function KasirClient({
           disabled={isPending}
           className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-900/20 transition hover:shadow-orange-900/30 disabled:opacity-60"
         >
-          {isPending ? "Memproses..." : "Buat Pesanan & Bayar"}
+          {isPending ? "Memproses..." : payLater ? "Kirim Pesanan (Bayar Nanti)" : "Buat Pesanan & Bayar"}
         </button>
       </div>
     </div>

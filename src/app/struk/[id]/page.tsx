@@ -113,6 +113,11 @@ export default async function StrukPage({
                 )}
               </>
             )}
+            {!order.payment && (
+              <p className="mt-2 rounded bg-amber-50 px-2 py-1 text-center text-xs font-semibold text-amber-700">
+                BELUM DIBAYAR — bayar saat meninggalkan warung
+              </p>
+            )}
           </div>
 
           <p className="mt-4 text-center text-xs text-gray-400">

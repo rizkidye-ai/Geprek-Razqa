@@ -3,6 +3,7 @@ import { Printer } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatRupiah } from "@/lib/format";
 import { advanceOrderStatusAction, cancelOrderAction } from "./actions";
+import { PayOrderButton } from "@/components/PayOrderButton";
 import { auth } from "@/auth";
 
 const columns: { status: "BARU" | "DIPROSES" | "SIAP" | "SELESAI"; label: string; color: string }[] = [
@@ -82,13 +83,15 @@ export default async function PesananPage() {
                       </li>
                     ))}
                   </ul>
-                  {order.payment && (
+                  {order.payment ? (
                     <p className="mb-2 text-xs font-medium text-gray-600">
                       {formatRupiah(order.payment.amount)} · {order.payment.method}
                     </p>
+                  ) : (
+                    <p className="mb-2 text-xs font-medium text-amber-600">Belum dibayar</p>
                   )}
                   <div className="flex flex-wrap gap-1.5">
-                    {nextLabel[order.status] && (
+                    {nextLabel[order.status] && (order.status !== "SIAP" || order.payment) && (
                       <form action={advanceOrderStatusAction}>
                         <input type="hidden" name="id" value={order.id} />
                         <button
@@ -98,6 +101,12 @@ export default async function PesananPage() {
                           {nextLabel[order.status]}
                         </button>
                       </form>
+                    )}
+                    {["ADMIN", "KASIR"].includes(role) && !order.payment && order.status !== "DIBATALKAN" && (
+                      <PayOrderButton
+                        orderId={order.id}
+                        total={order.items.reduce((sum, i) => sum + i.price * i.qty, 0)}
+                      />
                     )}
                     {["ADMIN", "KASIR"].includes(role) && order.status !== "SELESAI" && (
                       <form action={cancelOrderAction}>

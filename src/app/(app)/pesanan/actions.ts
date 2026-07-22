@@ -27,11 +27,18 @@ export async function advanceOrderStatusAction(formData: FormData) {
   if (!session?.user) throw new Error("Tidak diizinkan");
 
   const id = String(formData.get("id") ?? "");
-  const order = await prisma.order.findUnique({ where: { id } });
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { payment: true },
+  });
   if (!order) throw new Error("Pesanan tidak ditemukan.");
 
   const next = nextStatus[order.status];
   if (!next) throw new Error("Status pesanan tidak bisa dilanjutkan.");
+
+  if (next === "SELESAI" && !order.payment) {
+    throw new Error("Pesanan ini belum dibayar. Gunakan tombol Bayar untuk menyelesaikan pesanan.");
+  }
 
   await prisma.order.update({ where: { id }, data: { status: next } });
 
@@ -42,6 +49,59 @@ export async function advanceOrderStatusAction(formData: FormData) {
   revalidatePath("/pesanan");
   revalidatePath("/meja");
   revalidatePath("/");
+}
+
+export type PayOrderPayload = {
+  orderId: string;
+  method: "TUNAI" | "QRIS" | "TRANSFER";
+  cashReceived?: number;
+};
+
+export async function payOrderAction(payload: PayOrderPayload) {
+  const session = await auth();
+  if (!session?.user || !["ADMIN", "KASIR"].includes(session.user.role)) {
+    throw new Error("Tidak diizinkan");
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { id: payload.orderId },
+    include: { items: true, payment: true },
+  });
+  if (!order) throw new Error("Pesanan tidak ditemukan.");
+  if (order.payment) throw new Error("Pesanan ini sudah dibayar.");
+  if (order.status === "DIBATALKAN") throw new Error("Pesanan ini sudah dibatalkan.");
+
+  const total = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+  if (payload.method === "TUNAI" && (!payload.cashReceived || payload.cashReceived < total)) {
+    throw new Error("Uang tunai kurang dari total belanja.");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.payment.create({
+      data: {
+        orderId: order.id,
+        method: payload.method,
+        amount: total,
+        cashReceived: payload.method === "TUNAI" ? payload.cashReceived : null,
+        cashierId: session.user.id,
+      },
+    });
+    if (order.status !== "SELESAI") {
+      await tx.order.update({ where: { id: order.id }, data: { status: "SELESAI" } });
+    }
+  });
+
+  if (order.tableId) {
+    await freeTableIfNoActiveOrders(order.tableId);
+  }
+
+  revalidatePath("/pesanan");
+  revalidatePath("/meja");
+  revalidatePath("/laporan");
+  revalidatePath("/");
+
+  return { orderId: order.id };
 }
 
 export async function cancelOrderAction(formData: FormData) {
