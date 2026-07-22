@@ -23,6 +23,9 @@ export function PayOrderButton({ orderId, total }: { orderId: string; total: num
       setError("Uang tunai kurang dari total.");
       return;
     }
+    // Buka tab kosong secara langsung (synchronous) di dalam klik ini supaya tidak diblokir
+    // popup blocker browser, lalu diarahkan ke halaman struk setelah pembayaran berhasil.
+    const strukWindow = window.open("", "_blank");
     startTransition(async () => {
       try {
         await payOrderAction({
@@ -31,8 +34,12 @@ export function PayOrderButton({ orderId, total }: { orderId: string; total: num
           cashReceived: method === "TUNAI" ? cashReceivedNum : undefined,
         });
         setOpen(false);
+        if (strukWindow) {
+          strukWindow.location.href = `/struk/${orderId}`;
+        }
         router.refresh();
       } catch (e) {
+        strukWindow?.close();
         setError(e instanceof Error ? e.message : "Gagal memproses pembayaran.");
       }
     });
