@@ -2,6 +2,7 @@ import { Trash2, Users } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { SubmitButton } from "@/components/SubmitButton";
 import { createTableAction, deleteTableAction, setTableStatusAction } from "./actions";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function MejaPage() {
   const tables = await prisma.restaurantTable.findMany({
@@ -17,7 +18,10 @@ export default async function MejaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Manajemen Meja</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Manajemen Meja
+          <InfoTooltip text="Kelola daftar meja dine-in beserta kapasitasnya. Status Kosong/Terisi biasanya otomatis mengikuti pesanan, tapi bisa juga diubah manual di sini." />
+        </h1>
         <p className="text-sm text-gray-500">Kelola meja dine-in dan status ketersediaannya</p>
       </div>
 

@@ -1,5 +1,6 @@
 import { getIncomeStatement } from "@/lib/finance";
 import { formatRupiah } from "@/lib/format";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { format, startOfMonth, endOfDay } from "date-fns";
 
 export default async function LabaRugiPage({
@@ -21,7 +22,10 @@ export default async function LabaRugiPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Laba Rugi</h1>
+          <h1 className="flex items-center text-xl font-bold text-gray-900">
+            Laba Rugi
+            <InfoTooltip text="Pendapatan (dari penjualan) dikurangi HPP jadi Laba Kotor, lalu dikurangi biaya operasional (OPEX) jadi Laba Bersih. Ini laporan untung-rugi warung untuk periode yang dipilih. CAPEX tidak masuk di sini — lihat halaman BEP/ROI untuk itu." />
+          </h1>
           <p className="text-sm text-gray-500">Pendapatan, HPP, biaya operasional, dan laba bersih</p>
         </div>
         <form className="flex items-center gap-2" action="/keuangan/laba-rugi">

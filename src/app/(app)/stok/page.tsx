@@ -8,6 +8,7 @@ import {
   recordStockMovementAction,
   updateIngredientAction,
 } from "./actions";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function StokPage() {
   const [ingredients, movements] = await Promise.all([
@@ -22,7 +23,10 @@ export default async function StokPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Stok Bahan Baku</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Stok Bahan Baku
+          <InfoTooltip text="Pantau stok bahan baku, catat barang masuk (pembelian) dan keluar (rusak/hilang). Kolom 'Biaya per Satuan' wajib diisi supaya perhitungan HPP di halaman Keuangan akurat." />
+        </h1>
         <p className="text-sm text-gray-500">
           Pantau stok, catat barang masuk/keluar, dan cegah kehabisan bahan
         </p>

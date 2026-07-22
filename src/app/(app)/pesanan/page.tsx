@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatDateTime, formatRupiah } from "@/lib/format";
 import { advanceOrderStatusAction, cancelOrderAction } from "./actions";
 import { PayOrderButton } from "@/components/PayOrderButton";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { auth } from "@/auth";
 
 const columns: { status: "BARU" | "DIPROSES" | "SIAP" | "SELESAI"; label: string; color: string }[] = [
@@ -51,7 +52,10 @@ export default async function PesananPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Pesanan & Dapur</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Pesanan & Dapur
+          <InfoTooltip text="Papan alur pesanan: Baru → Diproses → Siap → Selesai. Dapur update status seiring proses masak. Untuk pesanan dine-in yang dipilih 'Bayar Nanti', ada tombol Bayar di sini untuk kasir memproses pembayaran saat pelanggan pulang." />
+        </h1>
         <p className="text-sm text-gray-500">Kelola alur pesanan dari dapur hingga selesai disajikan</p>
       </div>
 

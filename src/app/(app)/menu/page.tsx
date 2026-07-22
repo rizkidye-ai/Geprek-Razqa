@@ -9,6 +9,7 @@ import {
   toggleMenuItemActiveAction,
   deleteMenuItemAction,
 } from "./actions";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function MenuPage() {
   const [categories, menuItems] = await Promise.all([
@@ -23,7 +24,10 @@ export default async function MenuPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Menu & Resep</h1>
+          <h1 className="flex items-center text-xl font-bold text-gray-900">
+            Menu & Resep
+            <InfoTooltip text="Kelola daftar menu, kategori, dan harga jual. Resep bahan baku (jumlah bahan per porsi) dipakai untuk otomatis mengurangi stok saat ada pesanan, dan untuk menghitung HPP di halaman Keuangan." />
+          </h1>
           <p className="text-sm text-gray-500">Kelola daftar menu, harga, dan resep bahan baku per porsi</p>
         </div>
         <Link

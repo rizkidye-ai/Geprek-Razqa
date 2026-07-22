@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { SubmitButton } from "@/components/SubmitButton";
 import { LogoUploadField } from "@/components/LogoUploadField";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { updateSettingsAction } from "./actions";
 
 export default async function PengaturanPage() {
@@ -9,7 +10,10 @@ export default async function PengaturanPage() {
   return (
     <div className="max-w-lg space-y-4">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Pengaturan Warung</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Pengaturan Warung
+          <InfoTooltip text="Atur nama, alamat, telepon, logo, dan catatan kaki warung. Informasi ini otomatis tampil di sidebar, halaman login, dan struk pembayaran." />
+        </h1>
         <p className="text-sm text-gray-500">Informasi ini tampil di struk pembayaran</p>
       </div>
 

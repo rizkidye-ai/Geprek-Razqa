@@ -8,6 +8,7 @@ import {
   deleteUserAction,
   resetPasswordAction,
 } from "./actions";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 const roleLabel: Record<string, string> = {
   ADMIN: "Pemilik / Admin",
@@ -21,7 +22,10 @@ export default async function PegawaiPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Manajemen Pegawai</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Manajemen Pegawai
+          <InfoTooltip text="Kelola akun pengguna aplikasi: Admin (akses penuh), Kasir, dan Dapur. Bisa tambah akun baru, reset password, atau nonaktifkan akun tanpa menghapus datanya." />
+        </h1>
         <p className="text-sm text-gray-500">Kelola akun admin, kasir, dan dapur</p>
       </div>
 

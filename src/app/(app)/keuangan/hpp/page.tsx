@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getMenuItemsWithHpp } from "@/lib/finance";
 import { formatRupiah } from "@/lib/format";
 import { StatCard } from "@/components/StatCard";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function HppPage() {
   const menuItems = await getMenuItemsWithHpp();
@@ -18,7 +19,10 @@ export default async function HppPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">HPP (Harga Pokok Penjualan)</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          HPP (Harga Pokok Penjualan)
+          <InfoTooltip text="HPP = biaya bahan baku untuk membuat 1 porsi menu, dihitung otomatis dari resep (Menu & Resep) dikali biaya per satuan bahan (diisi di Stok Bahan Baku). Margin = selisih harga jual dengan HPP — semakin tinggi %, semakin untung menu tersebut." />
+        </h1>
         <p className="text-sm text-gray-500">
           Biaya bahan baku per menu berdasarkan resep, dibandingkan dengan harga jual
         </p>

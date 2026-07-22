@@ -2,6 +2,7 @@ import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 import { getBepRoiAnalysis } from "@/lib/finance";
 import { formatRupiah } from "@/lib/format";
 import { StatCard } from "@/components/StatCard";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { format, startOfMonth, endOfDay } from "date-fns";
 
 const verdictConfig = {
@@ -47,7 +48,10 @@ export default async function KelayakanPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">BEP, ROI &amp; Kelayakan Bisnis</h1>
+          <h1 className="flex items-center text-xl font-bold text-gray-900">
+            BEP, ROI &amp; Kelayakan Bisnis
+            <InfoTooltip text="BEP (Break Even Point) = minimal penjualan supaya tidak rugi. ROI (Return on Investment) = persentase pengembalian dari total modal (CAPEX) yang sudah dikeluarkan. Payback Period = estimasi lama modal kembali. Indikasi Kelayakan = kesimpulan otomatis dari angka-angka ini — bukan pengganti konsultasi profesional." />
+          </h1>
           <p className="text-sm text-gray-500">Analisis titik impas dan pengembalian modal</p>
         </div>
         <form className="flex items-center gap-2" action="/keuangan/kelayakan">

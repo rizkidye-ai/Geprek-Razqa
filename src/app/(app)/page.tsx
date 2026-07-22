@@ -4,6 +4,7 @@ import { getDashboardData } from "@/lib/dashboard";
 import { formatRupiah } from "@/lib/format";
 import { StatCard } from "@/components/StatCard";
 import { SalesChart } from "@/components/SalesChart";
+import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function DashboardPage() {
   const data = await getDashboardData();
@@ -11,7 +12,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          Dashboard
+          <InfoTooltip text="Ringkasan cepat kondisi warung hari ini: omzet, jumlah pesanan per status, menu paling laris, dan bahan baku yang mulai menipis. Halaman pertama yang dilihat setelah login." />
+        </h1>
         <p className="text-sm text-gray-500">Ringkasan operasional Warung Makan Geprek Rzqa hari ini</p>
       </div>
 

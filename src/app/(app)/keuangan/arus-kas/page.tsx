@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { formatRupiah, formatDate } from "@/lib/format";
 import { StatCard } from "@/components/StatCard";
 import { SalesChart } from "@/components/SalesChart";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { format, startOfMonth, endOfDay } from "date-fns";
 
 export default async function ArusKasPage({
@@ -66,7 +67,10 @@ export default async function ArusKasPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Arus Kas</h1>
+          <h1 className="flex items-center text-xl font-bold text-gray-900">
+            Arus Kas
+            <InfoTooltip text="Menunjukkan uang tunai yang benar-benar masuk (dari pembayaran pelanggan) dan keluar (dari pencatatan CAPEX & OPEX) dalam periode yang dipilih. Arus kas bersih positif berarti kas warung bertambah pada periode itu." />
+          </h1>
           <p className="text-sm text-gray-500">Kas masuk (penjualan) vs kas keluar (CAPEX &amp; OPEX)</p>
         </div>
         <form className="flex items-center gap-2" action="/keuangan/arus-kas">

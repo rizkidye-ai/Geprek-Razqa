@@ -4,6 +4,7 @@ import { formatRupiah, formatDate } from "@/lib/format";
 import { SubmitButton } from "@/components/SubmitButton";
 import { StatCard } from "@/components/StatCard";
 import { createExpenseAction, deleteExpenseAction } from "./actions";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { startOfMonth, subMonths, endOfMonth } from "date-fns";
 
 const capexCategories = ["Peralatan Dapur", "Renovasi Tempat", "Meja & Kursi", "Kendaraan", "Lainnya"];
@@ -35,7 +36,10 @@ export default async function PengeluaranPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-gray-900">CAPEX &amp; OPEX</h1>
+        <h1 className="flex items-center text-xl font-bold text-gray-900">
+          CAPEX &amp; OPEX
+          <InfoTooltip text="CAPEX = pengeluaran modal/investasi yang sekali beli dan dipakai lama (peralatan, renovasi, kendaraan). OPEX = biaya operasional rutin yang berulang tiap periode (sewa, listrik, gas, gaji). Catatan di sini jadi dasar perhitungan Laba Rugi, Arus Kas, dan ROI." />
+        </h1>
         <p className="text-sm text-gray-500">
           Catat pengeluaran modal (investasi) dan operasional (biaya rutin) warung
         </p>

@@ -3,6 +3,7 @@ import { getSalesReport } from "@/lib/reports";
 import { formatRupiah, formatDateTime } from "@/lib/format";
 import { StatCard } from "@/components/StatCard";
 import { SalesChart } from "@/components/SalesChart";
+import { InfoTooltip } from "@/components/InfoTooltip";
 import { format, startOfMonth, endOfDay } from "date-fns";
 
 export default async function LaporanPage({
@@ -23,7 +24,10 @@ export default async function LaporanPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Laporan Penjualan</h1>
+          <h1 className="flex items-center text-xl font-bold text-gray-900">
+            Laporan Penjualan
+            <InfoTooltip text="Rekap transaksi penjualan (dari pembayaran yang sudah masuk) dalam periode yang dipilih: total omzet, jumlah transaksi, grafik harian, menu terlaris, dan daftar transaksi lengkap. Bisa di-export ke CSV." />
+          </h1>
           <p className="text-sm text-gray-500">Analisis omzet dan transaksi warung</p>
         </div>
         <form className="flex items-center gap-2" action="/laporan">
