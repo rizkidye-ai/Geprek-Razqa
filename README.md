@@ -6,7 +6,7 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 
 - **Dashboard** — omzet hari ini, jumlah pesanan per status, menu terlaris, grafik penjualan 7 hari, dan peringatan stok menipis.
 - **Kasir (POS)** — pilih menu per kategori (dengan pencarian cepat), keranjang belanja interaktif, pilih meja (dine-in) atau bawa pulang, tombol uang cepat, hitung kembalian tunai, cetak struk. Untuk dine-in tersedia opsi **Bayar Nanti** (bayar saat pelanggan pulang).
-- **Pesanan & Dapur** — papan status pesanan (Baru → Diproses → Siap → Selesai) untuk alur kerja dapur, lengkap dengan pembatalan pesanan dan tombol Bayar untuk pesanan dine-in yang belum dibayar. Bisa dinonaktifkan lewat **Mode Dapur** di Pengaturan (untuk warung yang jualan dari stok siap saji, bukan masak per-pesanan) — pesanan baru akan langsung berstatus Siap.
+- **Pesanan & Dapur** — papan status pesanan (Baru → Diproses → Siap → Selesai) untuk alur kerja dapur, lengkap dengan pembatalan pesanan dan tombol Bayar untuk pesanan dine-in yang belum dibayar. Bisa dinonaktifkan lewat **Mode Dapur** di Pengaturan (untuk warung yang jualan dari stok siap saji, bukan masak per-pesanan) — pesanan baru langsung berstatus Selesai sejak dibuat, tetap bisa dibatalkan hari itu juga dan tetap bisa diproses tombol Bayar kalau belum dibayar.
 - **Menu & Resep** — CRUD menu dan kategori, serta resep bahan baku (BOM) per porsi sehingga stok otomatis berkurang saat pesanan dibuat.
 - **Stok Bahan Baku** — catat stok masuk/keluar, ambang batas stok minimum, riwayat pergerakan stok, dan peringatan otomatis saat menipis.
 - **Manajemen Meja** — status meja kosong/terisi yang otomatis diperbarui mengikuti alur pesanan.

@@ -91,7 +91,7 @@ export async function createOrderAction(payload: CreateOrderPayload) {
 
   const orderNumber = await generateOrderNumber();
   const settings = await prisma.settings.findFirst();
-  const initialStatus = settings?.kitchenModeEnabled === false ? "SIAP" : "BARU";
+  const initialStatus = settings?.kitchenModeEnabled === false ? "SELESAI" : "BARU";
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({

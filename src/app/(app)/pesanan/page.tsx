@@ -64,9 +64,10 @@ export default async function PesananPage() {
 
       {!kitchenModeEnabled && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
-          <strong>Mode Dapur nonaktif</strong> — pesanan baru langsung masuk ke kolom &quot;Siap Disajikan&quot;
-          (tidak melalui Baru/Diproses). Ubah lagi di menu Pengaturan kalau ingin kembali pakai alur masak
-          per-pesanan.
+          <strong>Mode Dapur nonaktif</strong> — pesanan baru langsung masuk ke kolom &quot;Selesai Hari Ini&quot;
+          sejak dibuat (tidak melalui Baru/Diproses/Siap). Pesanan yang belum dibayar tetap bisa diproses lewat
+          tombol Bayar, dan tetap bisa dibatalkan hari ini kalau ada kesalahan. Ubah lagi di menu Pengaturan
+          kalau ingin kembali pakai alur masak per-pesanan.
         </div>
       )}
 
@@ -123,7 +124,7 @@ export default async function PesananPage() {
                         total={order.items.reduce((sum, i) => sum + i.price * i.qty, 0)}
                       />
                     )}
-                    {["ADMIN", "KASIR"].includes(role) && order.status !== "SELESAI" && (
+                    {["ADMIN", "KASIR"].includes(role) && order.status !== "DIBATALKAN" && (
                       <form action={cancelOrderAction}>
                         <input type="hidden" name="id" value={order.id} />
                         <button

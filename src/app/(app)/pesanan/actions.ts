@@ -116,8 +116,13 @@ export async function cancelOrderAction(formData: FormData) {
     include: { items: { include: { menuItem: { include: { ingredients: true } } } } },
   });
   if (!order) throw new Error("Pesanan tidak ditemukan.");
-  if (order.status === "SELESAI" || order.status === "DIBATALKAN") {
-    throw new Error("Pesanan ini tidak bisa dibatalkan lagi.");
+  if (order.status === "DIBATALKAN") {
+    throw new Error("Pesanan ini sudah dibatalkan.");
+  }
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  if (order.status === "SELESAI" && order.createdAt < todayStart) {
+    throw new Error("Pesanan selesai dari hari sebelumnya tidak bisa dibatalkan lagi.");
   }
 
   await prisma.$transaction(async (tx) => {

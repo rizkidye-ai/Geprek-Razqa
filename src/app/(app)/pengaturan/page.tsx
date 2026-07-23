@@ -65,7 +65,7 @@ export default async function PengaturanPage() {
             <span>
               <span className="flex items-center text-sm font-medium text-gray-700">
                 Mode Dapur Aktif
-                <InfoTooltip text="ON (bawaan): pesanan baru masuk sebagai 'Baru' dan harus melalui tahap Diproses → Siap di halaman Pesanan & Dapur. OFF: pesanan baru langsung berstatus 'Siap' — cocok kalau jualan dari makanan yang sudah dimasak/siap duluan (tanpa masak per-pesanan), sehingga dapur tidak perlu standby menandai tahap masak satu-satu. Halaman Pesanan & Dapur tetap ada, tidak dihapus, dan bisa diaktifkan lagi kapan saja." />
+                <InfoTooltip text="ON (bawaan): pesanan baru masuk sebagai 'Baru' dan harus melalui tahap Diproses → Siap → Selesai di halaman Pesanan & Dapur. OFF: pesanan baru langsung berstatus 'Selesai' sejak dibuat — cocok kalau jualan dari makanan yang sudah dimasak/siap duluan (tanpa masak per-pesanan), sehingga tidak perlu menekan tombol apa pun lagi setelah transaksi dibuat. Pesanan tetap bisa dibatalkan hari itu juga kalau ada kesalahan. Halaman Pesanan & Dapur tetap ada, tidak dihapus, dan bisa diaktifkan lagi kapan saja." />
               </span>
               <span className="text-xs text-gray-400">
                 Matikan kalau jualan dari stok yang sudah dimasak duluan, tanpa perlu tahap masak per-pesanan.
