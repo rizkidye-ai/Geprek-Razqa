@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -13,7 +12,6 @@ import {
   BarChart3,
   Users,
   Settings,
-  Menu,
   X,
   Calculator,
   Receipt,
@@ -53,31 +51,26 @@ export function Sidebar({
   role,
   storeName,
   logoUrl,
+  open,
+  onClose,
 }: {
   role: string;
   storeName?: string | null;
   logoUrl?: string | null;
+  open: boolean;
+  onClose: () => void;
 }) {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
 
   const items = navItems.filter((item) => item.roles.includes(role));
   const financeItems = financeNavItems.filter((item) => item.roles.includes(role));
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="no-print lg:hidden fixed top-3 left-3 z-40 rounded-2xl bg-white p-2 shadow-md border border-gray-200"
-        aria-label="Buka menu"
-      >
-        <Menu size={20} />
-      </button>
-
       {open && (
         <div
           className="no-print fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={() => setOpen(false)}
+          onClick={onClose}
         />
       )}
 
@@ -101,7 +94,7 @@ export function Sidebar({
               <p className="text-[11px] text-gray-400 leading-tight">Manajemen Warung</p>
             </div>
           </div>
-          <button className="lg:hidden text-gray-400 hover:text-white" onClick={() => setOpen(false)}>
+          <button className="lg:hidden text-gray-400 hover:text-white" onClick={onClose} aria-label="Tutup menu">
             <X size={18} />
           </button>
         </div>
@@ -113,7 +106,7 @@ export function Sidebar({
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setOpen(false)}
+                onClick={onClose}
                 className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
                   active
                     ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-md shadow-orange-900/30"
@@ -139,7 +132,7 @@ export function Sidebar({
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    onClick={onClose}
                     className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 ${
                       active
                         ? "bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium shadow-md shadow-orange-900/30"

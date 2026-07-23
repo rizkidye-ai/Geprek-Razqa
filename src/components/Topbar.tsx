@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { logoutAction } from "@/app/(app)/logout-action";
 
 const roleLabel: Record<string, string> = {
@@ -7,12 +7,28 @@ const roleLabel: Record<string, string> = {
   DAPUR: "Dapur",
 };
 
-export function Topbar({ name, role }: { name: string; role: string }) {
+export function Topbar({
+  name,
+  role,
+  onMenuClick,
+}: {
+  name: string;
+  role: string;
+  onMenuClick: () => void;
+}) {
   const initial = name.trim().charAt(0).toUpperCase() || "?";
 
   return (
     <header className="no-print sticky top-0 z-30 flex items-center justify-between border-b border-gray-200/80 bg-white/80 px-4 py-3 backdrop-blur-md lg:px-6">
-      <div className="flex items-center gap-3 pl-10 lg:pl-0">
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={onMenuClick}
+          className="-ml-1 rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
+          aria-label="Buka menu"
+        >
+          <Menu size={20} />
+        </button>
         <div className="hidden h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-gray-800 to-gray-950 text-sm font-semibold text-white sm:flex">
           {initial}
         </div>
