@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -10,8 +11,27 @@ import {
   CartesianGrid,
 } from "recharts";
 import { formatRupiah } from "@/lib/format";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
-export function SalesChart({ data }: { data: { date: string; total: number }[] }) {
+function noopSubscribe() {
+  return () => {};
+}
+
+function useMounted() {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+}
+
+function Chart({ data }: { data: { date: string; total: number }[] }) {
+  const mounted = useMounted();
+
+  if (!mounted) {
+    return <div className="h-64 w-full animate-pulse rounded-lg bg-gray-50" />;
+  }
+
   return (
     <div className="h-64 w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -34,5 +54,15 @@ export function SalesChart({ data }: { data: { date: string; total: number }[] }
         </BarChart>
       </ResponsiveContainer>
     </div>
+  );
+}
+
+export function SalesChart({ data }: { data: { date: string; total: number }[] }) {
+  return (
+    <ErrorBoundary
+      fallback={<div className="flex h-64 w-full items-center justify-center text-sm text-gray-400">Grafik tidak tersedia.</div>}
+    >
+      <Chart data={data} />
+    </ErrorBoundary>
   );
 }
