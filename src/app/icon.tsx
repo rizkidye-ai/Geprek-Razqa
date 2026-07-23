@@ -7,11 +7,6 @@ export const contentType = "image/png";
 
 export default async function Icon() {
   const logo = await getStoredLogo();
-  if (logo) {
-    return new Response(new Uint8Array(logo.buffer), {
-      headers: { "Content-Type": logo.mime },
-    });
-  }
 
   return new ImageResponse(
     (
@@ -22,14 +17,29 @@ export default async function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#f97316",
-          color: "white",
-          fontSize: 260,
-          fontWeight: 700,
-          fontFamily: "sans-serif",
+          background: logo ? "#ffffff" : "#f97316",
         }}
       >
-        GR
+        {logo ? (
+          <img
+            src={`data:${logo.mime};base64,${logo.buffer.toString("base64")}`}
+            alt=""
+            width={size.width}
+            height={size.height}
+            style={{ objectFit: "contain" }}
+          />
+        ) : (
+          <span
+            style={{
+              color: "white",
+              fontSize: 260,
+              fontWeight: 700,
+              fontFamily: "sans-serif",
+            }}
+          >
+            GR
+          </span>
+        )}
       </div>
     ),
     { ...size },
