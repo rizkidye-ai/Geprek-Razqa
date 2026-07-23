@@ -13,6 +13,7 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Laporan Penjualan** — filter periode tanggal, grafik omzet harian, rincian metode pembayaran, menu terlaris, dan export CSV.
 - **Manajemen Pegawai** — akun dengan tiga peran (Admin/Pemilik, Kasir, Dapur), reset password, aktif/nonaktifkan akun.
 - **Pengaturan Warung** — nama, alamat, telepon, logo, catatan kaki struk, dan toggle **Mode Dapur** (aktif/nonaktif). Logo otomatis tampil di sidebar, halaman login, dan struk.
+- **Bisa Di-install Jadi Aplikasi (PWA)** — bukan sekadar website: aplikasi ini punya ikon (otomatis pakai logo warung dari Pengaturan), bisa ditambahkan ke Layar Utama HP, dan dibuka fullscreen tanpa address bar seperti aplikasi asli. Tidak perlu Play Store/App Store.
 - **Keuangan** (khusus Admin):
   - **HPP** — biaya bahan baku per menu (dari resep × biaya bahan) dibanding harga jual, dengan margin per item.
   - **CAPEX & OPEX** — catat pengeluaran modal/investasi dan biaya operasional rutin.
@@ -80,6 +81,15 @@ Buka [http://localhost:3000](http://localhost:3000).
 3. Saat pesanan **Selesai**, meja dine-in otomatis kembali berstatus kosong jika tidak ada pesanan aktif lain di meja tersebut.
 4. Pesanan dapat **dibatalkan** (oleh Admin/Kasir) selama belum selesai — stok bahan baku yang telah dipakai akan dikembalikan secara otomatis.
 5. **Admin** memantau performa warung lewat **Dashboard** dan **Laporan Penjualan**, mengelola **Menu & Resep**, **Stok**, **Pegawai**, dan **Pengaturan** warung.
+
+## Menginstall Sebagai Aplikasi di HP
+
+Aplikasi ini sudah jadi **PWA (Progressive Web App)** — bisa diinstall ke HP tanpa lewat Play Store/App Store:
+
+- **Android (Chrome)**: buka situsnya, ketuk menu titik tiga → **"Install aplikasi"** / **"Tambahkan ke layar Utama"**.
+- **iPhone (Safari)**: buka situsnya, ketuk tombol **Bagikan** (kotak dengan panah ke atas) → **"Add to Home Screen" / "Tambah ke Layar Utama"**.
+
+Setelah diinstall, ikon aplikasi (otomatis mengikuti logo warung yang diatur di menu **Pengaturan**) muncul di layar utama HP dan terbuka fullscreen tanpa address bar, seperti aplikasi biasa.
 
 ## Skrip yang Tersedia
 

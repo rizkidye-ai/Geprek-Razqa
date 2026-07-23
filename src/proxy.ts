@@ -20,9 +20,15 @@ function matchPath(pathname: string) {
   return keys.find((k) => (k === "/" ? pathname === "/" : pathname.startsWith(k)));
 }
 
+const publicPaths = ["/manifest.webmanifest", "/icon", "/apple-icon", "/sw.js"];
+
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
+
+  if (publicPaths.includes(pathname)) {
+    return NextResponse.next();
+  }
 
   if (pathname.startsWith("/login")) {
     if (isLoggedIn) {
