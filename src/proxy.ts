@@ -26,7 +26,7 @@ export default auth((req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
 
-  if (publicPaths.includes(pathname)) {
+  if (publicPaths.includes(pathname) || pathname.startsWith("/.well-known/")) {
     return NextResponse.next();
   }
 

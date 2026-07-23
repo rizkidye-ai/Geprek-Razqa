@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "geprekrazqa.app",
+        "sha256_cert_fingerprints": ["6E:ED:A6:6A:A4:68:75:0B:07:C9:1E:42:75:5C:85:58:94:1C:C6:82:A9:51:7C:3F:DA:7A:C6:B2:51:26:F0:2F"]
+      }
+    }]
