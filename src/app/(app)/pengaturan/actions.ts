@@ -16,6 +16,7 @@ export async function updateSettingsAction(formData: FormData) {
   const footer = String(formData.get("footer") ?? "").trim();
   const removeLogo = formData.get("removeLogo") === "on";
   const logoFile = formData.get("logo");
+  const kitchenModeEnabled = formData.get("kitchenModeEnabled") === "on";
 
   const existing = await prisma.settings.findFirst();
   let logoUrl = existing?.logoUrl ?? null;
@@ -36,12 +37,16 @@ export async function updateSettingsAction(formData: FormData) {
   if (existing) {
     await prisma.settings.update({
       where: { id: existing.id },
-      data: { name, address, phone, footer, logoUrl },
+      data: { name, address, phone, footer, logoUrl, kitchenModeEnabled },
     });
   } else {
-    await prisma.settings.create({ data: { name, address, phone, footer, logoUrl } });
+    await prisma.settings.create({
+      data: { name, address, phone, footer, logoUrl, kitchenModeEnabled },
+    });
   }
 
   revalidatePath("/pengaturan");
   revalidatePath("/struk");
+  revalidatePath("/kasir");
+  revalidatePath("/pesanan");
 }

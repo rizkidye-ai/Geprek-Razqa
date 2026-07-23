@@ -27,6 +27,9 @@ export default async function PesananPage() {
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
 
+  const settings = await prisma.settings.findFirst();
+  const kitchenModeEnabled = settings?.kitchenModeEnabled ?? true;
+
   const orders = await prisma.order.findMany({
     where: {
       OR: [
@@ -58,6 +61,14 @@ export default async function PesananPage() {
         </h1>
         <p className="text-sm text-gray-500">Kelola alur pesanan dari dapur hingga selesai disajikan</p>
       </div>
+
+      {!kitchenModeEnabled && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+          <strong>Mode Dapur nonaktif</strong> — pesanan baru langsung masuk ke kolom &quot;Siap Disajikan&quot;
+          (tidak melalui Baru/Diproses). Ubah lagi di menu Pengaturan kalau ingin kembali pakai alur masak
+          per-pesanan.
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {columns.map((col) => (

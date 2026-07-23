@@ -90,6 +90,8 @@ export async function createOrderAction(payload: CreateOrderPayload) {
   }
 
   const orderNumber = await generateOrderNumber();
+  const settings = await prisma.settings.findFirst();
+  const initialStatus = settings?.kitchenModeEnabled === false ? "SIAP" : "BARU";
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
@@ -99,7 +101,7 @@ export async function createOrderAction(payload: CreateOrderPayload) {
         tableId: payload.orderType === "DINE_IN" ? payload.tableId : null,
         customerName: payload.customerName || null,
         note: payload.note || null,
-        status: "BARU",
+        status: initialStatus,
         createdById: session.user.id,
         items: { create: orderItemsData },
         ...(payload.paymentMethod

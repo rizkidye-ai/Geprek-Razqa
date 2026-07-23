@@ -190,10 +190,11 @@ model Expense {
 }
 
 model Settings {
-  id      String  @id @default(cuid())
-  name    String  @default("Warung Makan Geprek Rzqa")
-  address String  @default("")
-  phone   String  @default("")
-  footer  String  @default("Terima kasih telah berkunjung!")
-  logoUrl String? @db.Text
+  id                 String  @id @default(cuid())
+  name               String  @default("Warung Makan Geprek Rzqa")
+  address            String  @default("")
+  phone              String  @default("")
+  footer             String  @default("Terima kasih telah berkunjung!")
+  logoUrl            String? @db.Text
+  kitchenModeEnabled Boolean @default(true)
 }
