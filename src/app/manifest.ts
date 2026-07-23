@@ -1,11 +1,16 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { getStoredLogo } from "@/lib/appIcon";
 
 export const dynamic = "force-dynamic";
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const settings = await prisma.settings.findFirst({ select: { name: true } });
+  const [settings, logo] = await Promise.all([
+    prisma.settings.findFirst({ select: { name: true } }),
+    getStoredLogo(),
+  ]);
   const name = settings?.name || "Warung Makan Geprek Rzqa";
+  const iconType = logo?.mime ?? "image/png";
 
   return {
     name,
@@ -17,9 +22,8 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     background_color: "#ffffff",
     theme_color: "#f97316",
     icons: [
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "maskable" },
-      { src: "/apple-icon", sizes: "180x180", type: "image/png" },
+      { src: "/icon", sizes: "512x512", type: iconType, purpose: "any" },
+      { src: "/apple-icon", sizes: "180x180", type: iconType },
     ],
   };
 }
