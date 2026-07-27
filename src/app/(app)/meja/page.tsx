@@ -55,7 +55,12 @@ export default async function MejaPage() {
               <p className="font-semibold text-gray-900">{t.number}</p>
               <form action={deleteTableAction}>
                 <input type="hidden" name="id" value={t.id} />
-                <button type="submit" className="text-gray-400 hover:text-red-500">
+                <button
+                  type="submit"
+                  disabled={t.orders.length > 0}
+                  title={t.orders.length > 0 ? "Meja masih memiliki pesanan aktif" : "Hapus meja"}
+                  className="text-gray-400 hover:text-red-500 disabled:cursor-not-allowed disabled:text-gray-200 disabled:hover:text-gray-200"
+                >
                   <Trash2 size={14} />
                 </button>
               </form>

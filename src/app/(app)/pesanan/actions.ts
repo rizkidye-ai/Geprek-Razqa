@@ -57,7 +57,9 @@ export type PayOrderPayload = {
   cashReceived?: number;
 };
 
-export async function payOrderAction(payload: PayOrderPayload) {
+export type PayOrderResult = { success: true; orderId: string } | { success: false; error: string };
+
+export async function payOrderAction(payload: PayOrderPayload): Promise<PayOrderResult> {
   const session = await auth();
   if (!session?.user || !["ADMIN", "KASIR"].includes(session.user.role)) {
     throw new Error("Tidak diizinkan");
@@ -67,14 +69,14 @@ export async function payOrderAction(payload: PayOrderPayload) {
     where: { id: payload.orderId },
     include: { items: true, payment: true },
   });
-  if (!order) throw new Error("Pesanan tidak ditemukan.");
-  if (order.payment) throw new Error("Pesanan ini sudah dibayar.");
-  if (order.status === "DIBATALKAN") throw new Error("Pesanan ini sudah dibatalkan.");
+  if (!order) return { success: false, error: "Pesanan tidak ditemukan." };
+  if (order.payment) return { success: false, error: "Pesanan ini sudah dibayar." };
+  if (order.status === "DIBATALKAN") return { success: false, error: "Pesanan ini sudah dibatalkan." };
 
   const total = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
   if (payload.method === "TUNAI" && (!payload.cashReceived || payload.cashReceived < total)) {
-    throw new Error("Uang tunai kurang dari total belanja.");
+    return { success: false, error: "Uang tunai kurang dari total belanja." };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -101,7 +103,7 @@ export async function payOrderAction(payload: PayOrderPayload) {
   revalidatePath("/laporan");
   revalidatePath("/");
 
-  return { orderId: order.id };
+  return { success: true, orderId: order.id };
 }
 
 export async function cancelOrderAction(formData: FormData) {

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { isNotFoundError } from "@/lib/dbErrors";
 
 async function requireAdmin() {
   const session = await auth();
@@ -40,7 +41,11 @@ export async function deleteCategoryAction(formData: FormData) {
   if (count > 0) {
     throw new Error("Kategori masih memiliki menu, pindahkan atau hapus menu terlebih dahulu.");
   }
-  await prisma.category.delete({ where: { id } });
+  try {
+    await prisma.category.delete({ where: { id } });
+  } catch (e) {
+    if (!isNotFoundError(e)) throw e;
+  }
   revalidatePath("/menu");
 }
 
@@ -130,6 +135,10 @@ export async function deleteMenuItemAction(formData: FormData) {
     throw new Error("Menu ini sudah pernah dipesan, nonaktifkan saja alih-alih menghapus.");
   }
   await prisma.menuIngredient.deleteMany({ where: { menuItemId: id } });
-  await prisma.menuItem.delete({ where: { id } });
+  try {
+    await prisma.menuItem.delete({ where: { id } });
+  } catch (e) {
+    if (!isNotFoundError(e)) throw e;
+  }
   revalidatePath("/menu");
 }

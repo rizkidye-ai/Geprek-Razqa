@@ -12,13 +12,20 @@ import {
 import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function MenuPage() {
-  const [categories, menuItems] = await Promise.all([
+  const [categories, menuItems, orderedMenuItems] = await Promise.all([
     prisma.category.findMany({ orderBy: { name: "asc" } }),
     prisma.menuItem.findMany({
       include: { category: true, ingredients: { include: { ingredient: true } } },
       orderBy: [{ category: { name: "asc" } }, { name: "asc" }],
     }),
+    prisma.orderItem.findMany({ select: { menuItemId: true }, distinct: ["menuItemId"] }),
   ]);
+
+  const orderedMenuItemIds = new Set(orderedMenuItems.map((o) => o.menuItemId));
+  const categoryMenuCounts = new Map<string, number>();
+  menuItems.forEach((m) => {
+    categoryMenuCounts.set(m.categoryId, (categoryMenuCounts.get(m.categoryId) ?? 0) + 1);
+  });
 
   return (
     <div className="space-y-6">
@@ -49,7 +56,16 @@ export default async function MenuPage() {
               {c.name}
               <form action={deleteCategoryAction}>
                 <input type="hidden" name="id" value={c.id} />
-                <button type="submit" className="text-gray-400 hover:text-red-500">
+                <button
+                  type="submit"
+                  disabled={(categoryMenuCounts.get(c.id) ?? 0) > 0}
+                  title={
+                    (categoryMenuCounts.get(c.id) ?? 0) > 0
+                      ? "Kategori masih memiliki menu, pindahkan/hapus menu dulu"
+                      : "Hapus kategori"
+                  }
+                  className="text-gray-400 hover:text-red-500 disabled:cursor-not-allowed disabled:text-gray-200 disabled:hover:text-gray-200"
+                >
                   <Trash2 size={12} />
                 </button>
               </form>
@@ -124,7 +140,16 @@ export default async function MenuPage() {
                     </Link>
                     <form action={deleteMenuItemAction}>
                       <input type="hidden" name="id" value={item.id} />
-                      <button type="submit" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50">
+                      <button
+                        type="submit"
+                        disabled={orderedMenuItemIds.has(item.id)}
+                        title={
+                          orderedMenuItemIds.has(item.id)
+                            ? "Menu ini sudah pernah dipesan, nonaktifkan saja alih-alih menghapus"
+                            : "Hapus menu"
+                        }
+                        className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </form>

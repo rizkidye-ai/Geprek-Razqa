@@ -133,6 +133,10 @@ export function KasirClient({
           paymentMethod: willPayNow ? paymentMethod : undefined,
           cashReceived: willPayNow && paymentMethod === "TUNAI" ? cashReceivedNum : undefined,
         });
+        if (!result.success) {
+          setError(result.error);
+          return;
+        }
         router.push(`/struk/${result.orderId}`);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Gagal membuat pesanan.");

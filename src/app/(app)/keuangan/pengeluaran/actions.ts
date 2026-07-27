@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { isNotFoundError } from "@/lib/dbErrors";
 
 async function requireAdmin() {
   const session = await auth();
@@ -44,7 +45,12 @@ export async function createExpenseAction(formData: FormData) {
 export async function deleteExpenseAction(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id") ?? "");
-  await prisma.expense.delete({ where: { id } });
+  try {
+    await prisma.expense.delete({ where: { id } });
+  } catch (e) {
+    // Sudah terhapus sebelumnya (mis. klik ganda) — abaikan saja, hasil akhirnya sama.
+    if (!isNotFoundError(e)) throw e;
+  }
 
   revalidatePath("/keuangan/pengeluaran");
   revalidatePath("/keuangan/arus-kas");

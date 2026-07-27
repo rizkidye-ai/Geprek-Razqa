@@ -2,23 +2,24 @@ import { Save, Trash2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
 import { SubmitButton } from "@/components/SubmitButton";
-import {
-  createIngredientAction,
-  deleteIngredientAction,
-  recordStockMovementAction,
-  updateIngredientAction,
-} from "./actions";
+import { StockMovementForm } from "@/components/StockMovementForm";
+import { createIngredientAction, deleteIngredientAction, updateIngredientAction } from "./actions";
 import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function StokPage() {
-  const [ingredients, movements] = await Promise.all([
+  const [ingredients, movements, usedIngredients] = await Promise.all([
     prisma.ingredient.findMany({ orderBy: { name: "asc" } }),
     prisma.stockMovement.findMany({
       orderBy: { createdAt: "desc" },
       take: 20,
       include: { ingredient: true, createdBy: true },
     }),
+    prisma.menuIngredient.findMany({
+      select: { ingredientId: true },
+      distinct: ["ingredientId"],
+    }),
   ]);
+  const usedIngredientIds = new Set(usedIngredients.map((mi) => mi.ingredientId));
 
   return (
     <div className="space-y-6">
@@ -33,44 +34,7 @@ export default async function StokPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <form action={recordStockMovementAction} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
-          <h2 className="text-sm font-semibold text-gray-800">Catat Stok Masuk / Keluar</h2>
-          <select
-            name="ingredientId"
-            required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          >
-            <option value="">Pilih bahan baku</option>
-            {ingredients.map((i) => (
-              <option key={i.id} value={i.id}>
-                {i.name} (stok: {i.stock} {i.unit})
-              </option>
-            ))}
-          </select>
-          <div className="grid grid-cols-2 gap-2">
-            <select name="type" className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-              <option value="MASUK">Stok Masuk</option>
-              <option value="KELUAR">Stok Keluar</option>
-            </select>
-            <input
-              name="qty"
-              type="number"
-              step="0.01"
-              min="0"
-              required
-              placeholder="Jumlah"
-              className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-            />
-          </div>
-          <input
-            name="note"
-            placeholder="Catatan (mis. pembelian dari supplier, rusak, dsb.)"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-          />
-          <SubmitButton className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 py-2 text-sm font-semibold text-white shadow-md shadow-orange-900/10 transition hover:shadow-lg hover:shadow-orange-900/20 disabled:opacity-60">
-            Simpan
-          </SubmitButton>
-        </form>
+        <StockMovementForm ingredients={ingredients} />
 
         <form action={createIngredientAction} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
           <h2 className="text-sm font-semibold text-gray-800">Tambah Bahan Baku Baru</h2>
@@ -177,7 +141,16 @@ export default async function StokPage() {
                   <td className="px-4 py-3 text-right">
                     <form action={deleteIngredientAction}>
                       <input type="hidden" name="id" value={i.id} />
-                      <button type="submit" className="rounded-lg p-1.5 text-red-500 hover:bg-red-50">
+                      <button
+                        type="submit"
+                        disabled={usedIngredientIds.has(i.id)}
+                        title={
+                          usedIngredientIds.has(i.id)
+                            ? "Bahan ini dipakai di resep menu, tidak bisa dihapus"
+                            : "Hapus bahan baku"
+                        }
+                        className="rounded-lg p-1.5 text-red-500 hover:bg-red-50 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </form>

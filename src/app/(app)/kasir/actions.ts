@@ -21,20 +21,24 @@ export type CreateOrderPayload = {
   cashReceived?: number;
 };
 
-export async function createOrderAction(payload: CreateOrderPayload) {
+export type CreateOrderResult =
+  | { success: true; orderId: string; orderNumber: string }
+  | { success: false; error: string };
+
+export async function createOrderAction(payload: CreateOrderPayload): Promise<CreateOrderResult> {
   const session = await auth();
   if (!session?.user || !["ADMIN", "KASIR"].includes(session.user.role)) {
     throw new Error("Tidak diizinkan");
   }
 
   if (payload.items.length === 0) {
-    throw new Error("Keranjang masih kosong.");
+    return { success: false, error: "Keranjang masih kosong." };
   }
   if (payload.orderType === "DINE_IN" && !payload.tableId) {
-    throw new Error("Pilih meja untuk pesanan dine-in.");
+    return { success: false, error: "Pilih meja untuk pesanan dine-in." };
   }
   if (payload.orderType === "TAKEAWAY" && !payload.paymentMethod) {
-    throw new Error("Pesanan bawa pulang harus dibayar di muka.");
+    return { success: false, error: "Pesanan bawa pulang harus dibayar di muka." };
   }
 
   const menuItems = await prisma.menuItem.findMany({
@@ -44,23 +48,24 @@ export async function createOrderAction(payload: CreateOrderPayload) {
   const menuMap = new Map(menuItems.map((m) => [m.id, m]));
 
   let total = 0;
-  const orderItemsData = payload.items.map((cartItem) => {
+  const orderItemsData: { menuItemId: string; qty: number; price: number; note: string | null }[] = [];
+  for (const cartItem of payload.items) {
     const menuItem = menuMap.get(cartItem.menuItemId);
     if (!menuItem || !menuItem.isActive) {
-      throw new Error(`Menu tidak tersedia: ${cartItem.menuItemId}`);
+      return { success: false, error: `Menu tidak tersedia: ${cartItem.menuItemId}` };
     }
     total += menuItem.price * cartItem.qty;
-    return {
+    orderItemsData.push({
       menuItemId: menuItem.id,
       qty: cartItem.qty,
       price: menuItem.price,
       note: cartItem.note || null,
-    };
-  });
+    });
+  }
 
   if (payload.paymentMethod === "TUNAI") {
     if (!payload.cashReceived || payload.cashReceived < total) {
-      throw new Error("Uang tunai yang diterima kurang dari total belanja.");
+      return { success: false, error: "Uang tunai yang diterima kurang dari total belanja." };
     }
   }
 
@@ -82,9 +87,10 @@ export async function createOrderAction(payload: CreateOrderPayload) {
     for (const [ingredientId, needed] of consumption.entries()) {
       const ingredient = ingredientMap.get(ingredientId);
       if (!ingredient || ingredient.stock < needed) {
-        throw new Error(
-          `Stok ${ingredient?.name ?? "bahan"} tidak mencukupi untuk pesanan ini.`
-        );
+        return {
+          success: false,
+          error: `Stok ${ingredient?.name ?? "bahan"} tidak mencukupi untuk pesanan ini.`,
+        };
       }
     }
   }
@@ -150,5 +156,5 @@ export async function createOrderAction(payload: CreateOrderPayload) {
   revalidatePath("/stok");
   revalidatePath("/");
 
-  return { orderId: order.id, orderNumber: order.orderNumber };
+  return { success: true, orderId: order.id, orderNumber: order.orderNumber };
 }

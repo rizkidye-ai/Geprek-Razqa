@@ -11,7 +11,7 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Stok Bahan Baku** — catat stok masuk/keluar, ambang batas stok minimum, riwayat pergerakan stok, dan peringatan otomatis saat menipis.
 - **Manajemen Meja** — status meja kosong/terisi yang otomatis diperbarui mengikuti alur pesanan.
 - **Laporan Penjualan** — filter periode tanggal, grafik omzet harian, rincian metode pembayaran, menu terlaris, dan export CSV.
-- **Manajemen Pegawai** — akun dengan tiga peran (Admin/Pemilik, Kasir, Dapur), reset password, aktif/nonaktifkan akun.
+- **Manajemen Pegawai** — akun dengan tiga peran (Admin/Pemilik, Kasir, Dapur), edit nama/username/peran, reset password, aktif/nonaktifkan akun. Akun sendiri tidak bisa dihapus/dinonaktifkan/diubah perannya sendiri (mencegah admin terkunci dari akunnya sendiri).
 - **Pengaturan Warung** — nama, alamat, telepon, logo, catatan kaki struk, dan toggle **Mode Dapur** (aktif/nonaktif). Logo otomatis tampil di sidebar, halaman login, dan struk.
 - **Bisa Di-install Jadi Aplikasi (PWA)** — bukan sekadar website: aplikasi ini punya ikon (otomatis pakai logo warung dari Pengaturan), bisa ditambahkan ke Layar Utama HP, dan dibuka fullscreen tanpa address bar seperti aplikasi asli. Tidak perlu Play Store/App Store.
 - **Keuangan** (khusus Admin):

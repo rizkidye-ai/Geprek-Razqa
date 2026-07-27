@@ -28,11 +28,16 @@ export function PayOrderButton({ orderId, total }: { orderId: string; total: num
     const strukWindow = window.open("", "_blank");
     startTransition(async () => {
       try {
-        await payOrderAction({
+        const result = await payOrderAction({
           orderId,
           method,
           cashReceived: method === "TUNAI" ? cashReceivedNum : undefined,
         });
+        if (!result.success) {
+          strukWindow?.close();
+          setError(result.error);
+          return;
+        }
         setOpen(false);
         if (strukWindow) {
           strukWindow.location.href = `/struk/${orderId}`;

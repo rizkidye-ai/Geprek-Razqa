@@ -6,10 +6,24 @@ import { ImageOff } from "lucide-react";
 export function LogoUploadField({ currentLogoUrl }: { currentLogoUrl: string | null }) {
   const [preview, setPreview] = useState<string | null>(currentLogoUrl);
   const [markRemove, setMarkRemove] = useState(false);
+  const [error, setError] = useState("");
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setError("");
+
+    if (!file.type.startsWith("image/")) {
+      setError("File logo harus berupa gambar (PNG/JPG).");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 1_000_000) {
+      setError("Ukuran logo maksimal 1MB.");
+      e.target.value = "";
+      return;
+    }
+
     setMarkRemove(false);
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result as string);
@@ -37,6 +51,7 @@ export function LogoUploadField({ currentLogoUrl }: { currentLogoUrl: string | n
             className="block w-full text-xs text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-gray-700 hover:file:bg-gray-200"
           />
           <p className="text-xs text-gray-400">PNG/JPG, maks. 1MB. Muncul di struk & sidebar.</p>
+          {error && <p className="text-xs text-red-600">{error}</p>}
           {currentLogoUrl && (
             <label className="flex items-center gap-1.5 text-xs text-red-500">
               <input

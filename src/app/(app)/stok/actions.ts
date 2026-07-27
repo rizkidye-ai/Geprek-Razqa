@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { isNotFoundError } from "@/lib/dbErrors";
 
 async function requireStaff() {
   const session = await auth();
@@ -59,11 +60,17 @@ export async function deleteIngredientAction(formData: FormData) {
     throw new Error("Bahan ini masih dipakai di resep menu.");
   }
   await prisma.stockMovement.deleteMany({ where: { ingredientId: id } });
-  await prisma.ingredient.delete({ where: { id } });
+  try {
+    await prisma.ingredient.delete({ where: { id } });
+  } catch (e) {
+    if (!isNotFoundError(e)) throw e;
+  }
   revalidatePath("/stok");
 }
 
-export async function recordStockMovementAction(formData: FormData) {
+export type StockMovementResult = { success: true } | { success: false; error: string };
+
+export async function recordStockMovementAction(formData: FormData): Promise<StockMovementResult> {
   const user = await requireStaff();
   const ingredientId = String(formData.get("ingredientId") ?? "");
   const type = String(formData.get("type") ?? "MASUK") as "MASUK" | "KELUAR";
@@ -71,15 +78,18 @@ export async function recordStockMovementAction(formData: FormData) {
   const note = String(formData.get("note") ?? "").trim();
 
   if (!ingredientId || Number.isNaN(qty) || qty <= 0) {
-    throw new Error("Jumlah tidak valid.");
+    return { success: false, error: "Jumlah tidak valid." };
   }
 
   const ingredient = await prisma.ingredient.findUnique({ where: { id: ingredientId } });
-  if (!ingredient) throw new Error("Bahan tidak ditemukan.");
+  if (!ingredient) return { success: false, error: "Bahan tidak ditemukan." };
 
   const delta = type === "MASUK" ? qty : -qty;
   if (ingredient.stock + delta < 0) {
-    throw new Error("Stok tidak mencukupi untuk pengurangan ini.");
+    return {
+      success: false,
+      error: `Stok ${ingredient.name} cuma ${ingredient.stock} ${ingredient.unit}, tidak mencukupi untuk pengurangan ini.`,
+    };
   }
 
   await prisma.$transaction([
@@ -99,4 +109,5 @@ export async function recordStockMovementAction(formData: FormData) {
   ]);
 
   revalidatePath("/stok");
+  return { success: true };
 }

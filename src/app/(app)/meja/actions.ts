@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { isNotFoundError } from "@/lib/dbErrors";
 
 async function requireStaff() {
   const session = await auth();
@@ -31,7 +32,11 @@ export async function deleteTableAction(formData: FormData) {
   if (activeOrders > 0) {
     throw new Error("Meja masih memiliki pesanan aktif.");
   }
-  await prisma.restaurantTable.delete({ where: { id } });
+  try {
+    await prisma.restaurantTable.delete({ where: { id } });
+  } catch (e) {
+    if (!isNotFoundError(e)) throw e;
+  }
   revalidatePath("/meja");
 }
 

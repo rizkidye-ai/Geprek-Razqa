@@ -71,7 +71,7 @@ export default async function PengeluaranPage() {
         <input
           name="amount"
           type="number"
-          min="0"
+          min="1"
           required
           placeholder="Jumlah (Rp)"
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
