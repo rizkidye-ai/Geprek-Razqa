@@ -126,8 +126,27 @@ export default async function StokPage() {
                       </button>
                     </form>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {i.minStock} {i.unit}
+                  <td className="px-4 py-3">
+                    <form action={updateIngredientAction} className="flex items-center gap-1">
+                      <input type="hidden" name="id" value={i.id} />
+                      <input type="hidden" name="costPerUnit" value={i.costPerUnit} />
+                      <input
+                        name="minStock"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        defaultValue={i.minStock}
+                        className="w-20 rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600"
+                      />
+                      <span className="text-xs text-gray-400">{i.unit}</span>
+                      <button
+                        type="submit"
+                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                        title="Simpan stok minimum"
+                      >
+                        <Save size={13} />
+                      </button>
+                    </form>
                   </td>
                   <td className="px-4 py-3">
                     <form action={updateIngredientAction} className="flex items-center gap-1">
