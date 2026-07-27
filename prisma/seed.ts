@@ -279,6 +279,7 @@ async function main() {
     description: string;
     amount: number;
     date: Date;
+    frequency?: "HARIAN" | "BULANAN";
   }[] = [
     // CAPEX: modal awal / investasi peralatan
     {
@@ -302,15 +303,15 @@ async function main() {
       amount: 8_000_000,
       date: daysAgo(170),
     },
-    // OPEX: biaya operasional rutin (2 bulan terakhir)
-    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(45) },
-    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 800_000, date: daysAgo(40) },
-    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(38) },
-    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(35) },
-    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(15) },
-    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 850_000, date: daysAgo(10) },
-    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(8) },
-    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(5) },
+    // OPEX: biaya operasional rutin (2 bulan terakhir) — dicatat sekaligus per bulan
+    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(45), frequency: "BULANAN" },
+    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 800_000, date: daysAgo(40), frequency: "BULANAN" },
+    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(38), frequency: "BULANAN" },
+    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(35), frequency: "BULANAN" },
+    { type: "OPEX", category: "Sewa Tempat", description: "Sewa bulanan", amount: 3_000_000, date: daysAgo(15), frequency: "BULANAN" },
+    { type: "OPEX", category: "Listrik & Air", description: "Tagihan bulanan", amount: 850_000, date: daysAgo(10), frequency: "BULANAN" },
+    { type: "OPEX", category: "Gas LPG", description: "Isi ulang gas dapur", amount: 400_000, date: daysAgo(8), frequency: "BULANAN" },
+    { type: "OPEX", category: "Gaji Karyawan", description: "Gaji kasir & dapur", amount: 4_000_000, date: daysAgo(5), frequency: "BULANAN" },
   ];
 
   for (const e of expenseData) {
@@ -321,6 +322,7 @@ async function main() {
         description: e.description,
         amount: e.amount,
         date: e.date,
+        frequency: e.frequency ?? "HARIAN",
         createdById: admin.id,
       },
     });

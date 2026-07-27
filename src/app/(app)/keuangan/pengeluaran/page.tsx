@@ -1,9 +1,9 @@
 import { Trash2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah, formatDate } from "@/lib/format";
-import { SubmitButton } from "@/components/SubmitButton";
 import { StatCard } from "@/components/StatCard";
-import { createExpenseAction, deleteExpenseAction } from "./actions";
+import { CreateExpenseForm } from "@/components/CreateExpenseForm";
+import { deleteExpenseAction } from "./actions";
 import { InfoTooltip } from "@/components/InfoTooltip";
 import { startOfMonth, subMonths, endOfMonth } from "date-fns";
 
@@ -38,7 +38,7 @@ export default async function PengeluaranPage() {
       <div>
         <h1 className="flex items-center text-xl font-bold text-gray-900">
           CAPEX &amp; OPEX
-          <InfoTooltip text="CAPEX = pengeluaran modal/investasi yang sekali beli dan dipakai lama (peralatan, renovasi, kendaraan). OPEX = biaya operasional rutin yang berulang tiap periode (sewa, listrik, gas, gaji). Catatan di sini jadi dasar perhitungan Laba Rugi, Arus Kas, dan ROI." />
+          <InfoTooltip text="CAPEX = pengeluaran modal/investasi yang sekali beli dan dipakai lama (peralatan, renovasi, kendaraan). OPEX = biaya operasional rutin yang berulang tiap periode (sewa, listrik, gas, gaji). Frekuensi 'Bulanan' berarti jumlahnya adalah total satu bulan sekaligus (mis. sewa tempat) — tidak dihitung per hari di grafik Arus Kas supaya tidak menumpuk di satu tanggal. Frekuensi 'Harian' ikut dihitung per hari (cocok untuk biaya yang memang dicatat tiap hari lewat Tutup Kasir Harian). Catatan di sini jadi dasar perhitungan Laba Rugi, Arus Kas, dan ROI." />
         </h1>
         <p className="text-sm text-gray-500">
           Catat pengeluaran modal (investasi) dan operasional (biaya rutin) warung
@@ -51,44 +51,7 @@ export default async function PengeluaranPage() {
         <StatCard label="OPEX Bulan Lalu" value={formatRupiah(opexLastMonth._sum.amount ?? 0)} accent="green" />
       </div>
 
-      <form action={createExpenseAction} className="grid grid-cols-1 gap-3 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100 sm:grid-cols-2 lg:grid-cols-5">
-        <select name="type" className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
-          <option value="OPEX">OPEX (Operasional)</option>
-          <option value="CAPEX">CAPEX (Modal/Investasi)</option>
-        </select>
-        <input
-          name="category"
-          list="expense-categories"
-          required
-          placeholder="Kategori, mis. Sewa Tempat"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-        <datalist id="expense-categories">
-          {Array.from(new Set([...capexCategories, ...opexCategories])).map((c) => (
-            <option key={c} value={c} />
-          ))}
-        </datalist>
-        <input
-          name="amount"
-          type="number"
-          min="1"
-          required
-          placeholder="Jumlah (Rp)"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-        <input
-          name="date"
-          type="date"
-          defaultValue={now.toISOString().slice(0, 10)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm"
-        />
-        <input
-          name="description"
-          placeholder="Keterangan (opsional)"
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm sm:col-span-2 lg:col-span-4"
-        />
-        <SubmitButton>Catat Pengeluaran</SubmitButton>
-      </form>
+      <CreateExpenseForm categories={Array.from(new Set([...capexCategories, ...opexCategories]))} />
 
       <div className="overflow-x-auto rounded-2xl bg-white shadow-sm ring-1 ring-gray-100">
         <table className="w-full text-sm">
@@ -97,6 +60,7 @@ export default async function PengeluaranPage() {
               <th className="px-4 py-3">Tanggal</th>
               <th className="px-4 py-3">Tipe</th>
               <th className="px-4 py-3">Kategori</th>
+              <th className="px-4 py-3">Frekuensi</th>
               <th className="px-4 py-3">Keterangan</th>
               <th className="px-4 py-3 text-right">Jumlah</th>
               <th className="px-4 py-3 text-right">Aksi</th>
@@ -116,6 +80,20 @@ export default async function PengeluaranPage() {
                   </span>
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-900">{e.category}</td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${
+                      e.frequency === "BULANAN" ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-600"
+                    }`}
+                    title={
+                      e.frequency === "BULANAN"
+                        ? "Tidak dihitung per hari di grafik Arus Kas"
+                        : "Ikut dihitung per hari di grafik Arus Kas"
+                    }
+                  >
+                    {e.frequency === "BULANAN" ? "Bulanan" : "Harian"}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-gray-500">{e.description || "-"}</td>
                 <td className="px-4 py-3 text-right font-medium text-gray-900">{formatRupiah(e.amount)}</td>
                 <td className="px-4 py-3 text-right">
@@ -130,7 +108,7 @@ export default async function PengeluaranPage() {
             ))}
             {expenses.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={7} className="px-4 py-8 text-center text-gray-400">
                   Belum ada pengeluaran tercatat.
                 </td>
               </tr>

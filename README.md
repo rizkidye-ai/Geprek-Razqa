@@ -17,8 +17,8 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Keuangan** (khusus Admin):
   - **Tutup Kasir Harian** — catat cepat setiap tutup toko: uang Kas Toko yang disisihkan (bukan biaya, tetap milik usaha) plus biaya Gas, Listrik, dan Gaji Karyawan hari itu. Gas/Listrik/Gaji otomatis tercatat sebagai OPEX di CAPEX & OPEX.
   - **HPP** — biaya bahan baku per menu (dari resep × biaya bahan) dibanding harga jual, dengan margin per item.
-  - **CAPEX & OPEX** — catat pengeluaran modal/investasi dan biaya operasional rutin.
-  - **Arus Kas** — kas masuk (penjualan) vs kas keluar (CAPEX+OPEX) per periode, lengkap grafik harian.
+  - **CAPEX & OPEX** — catat pengeluaran modal/investasi dan biaya operasional rutin, dengan frekuensi **Harian** (dihitung per hari) atau **Bulanan** (jumlah sekaligus untuk sebulan, mis. sewa tempat).
+  - **Arus Kas** — kas masuk (penjualan) vs kas keluar (CAPEX+OPEX) per periode, lengkap grafik harian. Grafik harian tidak menyertakan pengeluaran berfrekuensi Bulanan supaya satu tanggal tidak tampak anjlok drastis akibat biaya sebulan penuh (total Kas Keluar tetap menghitung semuanya).
   - **Laba Rugi** — Pendapatan − HPP = Laba Kotor − OPEX = Laba Bersih, per periode.
   - **BEP, ROI & Kelayakan Bisnis** — titik impas (unit & Rupiah), ROI dari investasi CAPEX, estimasi payback period, dan indikasi kelayakan bisnis.
 

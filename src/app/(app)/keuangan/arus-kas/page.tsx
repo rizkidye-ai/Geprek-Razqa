@@ -56,6 +56,9 @@ export default async function ArusKasPage({
     byDayMap.set(key, (byDayMap.get(key) ?? 0) + p.amount);
   }
   for (const e of expenses) {
+    // Pengeluaran "Bulanan" (mis. sewa tempat) sengaja tidak dihitung per hari di sini —
+    // kalau ikut, satu tanggal akan tampak anjlok drastis padahal itu biaya sebulan, bukan hari itu saja.
+    if (e.frequency === "BULANAN") continue;
     const key = format(e.date, "yyyy-MM-dd");
     byDayMap.set(key, (byDayMap.get(key) ?? 0) - e.amount);
   }
@@ -69,7 +72,7 @@ export default async function ArusKasPage({
         <div>
           <h1 className="flex items-center text-xl font-bold text-gray-900">
             Arus Kas
-            <InfoTooltip text="Menunjukkan uang tunai yang benar-benar masuk (dari pembayaran pelanggan) dan keluar (dari pencatatan CAPEX & OPEX) dalam periode yang dipilih. Arus kas bersih positif berarti kas warung bertambah pada periode itu." />
+            <InfoTooltip text="Menunjukkan uang tunai yang benar-benar masuk (dari pembayaran pelanggan) dan keluar (dari pencatatan CAPEX & OPEX) dalam periode yang dipilih. Arus kas bersih positif berarti kas warung bertambah pada periode itu. Total Kas Keluar tetap menghitung semua pengeluaran, tapi grafik harian di bawah TIDAK menyertakan pengeluaran berfrekuensi 'Bulanan' (mis. sewa tempat) supaya satu tanggal tidak tampak anjlok drastis akibat biaya sebulan penuh." />
           </h1>
           <p className="text-sm text-gray-500">Kas masuk (penjualan) vs kas keluar (CAPEX &amp; OPEX)</p>
         </div>
@@ -95,7 +98,10 @@ export default async function ArusKasPage({
       </div>
 
       <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-100">
-        <h2 className="mb-3 text-sm font-semibold text-gray-800">Arus Kas Bersih Harian</h2>
+        <h2 className="text-sm font-semibold text-gray-800">Arus Kas Bersih Harian</h2>
+        <p className="mb-3 text-xs text-gray-400">
+          Tidak termasuk pengeluaran berfrekuensi &quot;Bulanan&quot;
+        </p>
         <SalesChart data={chartData} />
       </div>
 

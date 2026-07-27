@@ -13,25 +13,32 @@ async function requireAdmin() {
   return session.user;
 }
 
-export async function createExpenseAction(formData: FormData) {
-  const user = await requireAdmin();
-  const type = String(formData.get("type") ?? "OPEX") as "CAPEX" | "OPEX";
-  const category = String(formData.get("category") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const amount = parseInt(String(formData.get("amount") ?? "0"), 10);
-  const dateStr = String(formData.get("date") ?? "");
+export type ExpenseActionResult = { success: true } | { success: false; error: string };
 
-  if (!category || Number.isNaN(amount) || amount <= 0) {
-    throw new Error("Kategori dan jumlah wajib diisi dengan benar.");
+export async function createExpenseAction(input: {
+  type: "CAPEX" | "OPEX";
+  category: string;
+  description: string;
+  amount: number;
+  frequency: "HARIAN" | "BULANAN";
+  date: string;
+}): Promise<ExpenseActionResult> {
+  const user = await requireAdmin();
+  const category = input.category.trim();
+  const description = input.description.trim();
+
+  if (!category || Number.isNaN(input.amount) || input.amount <= 0) {
+    return { success: false, error: "Kategori dan jumlah wajib diisi dengan benar." };
   }
 
   await prisma.expense.create({
     data: {
-      type,
+      type: input.type,
       category,
       description: description || null,
-      amount,
-      date: dateStr ? new Date(dateStr) : new Date(),
+      amount: input.amount,
+      frequency: input.frequency,
+      date: input.date ? new Date(input.date) : new Date(),
       createdById: user.id,
     },
   });
@@ -40,6 +47,7 @@ export async function createExpenseAction(formData: FormData) {
   revalidatePath("/keuangan/arus-kas");
   revalidatePath("/keuangan/laba-rugi");
   revalidatePath("/keuangan/kelayakan");
+  return { success: true };
 }
 
 export async function deleteExpenseAction(formData: FormData) {
