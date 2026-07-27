@@ -18,6 +18,7 @@ import {
   Wallet,
   TrendingUp,
   Target,
+  Banknote,
 } from "lucide-react";
 
 type NavItem = {
@@ -40,6 +41,7 @@ const navItems: NavItem[] = [
 ];
 
 const financeNavItems: NavItem[] = [
+  { href: "/keuangan/tutup-kasir", label: "Tutup Kasir Harian", icon: <Banknote size={18} />, roles: ["ADMIN"] },
   { href: "/keuangan/hpp", label: "HPP", icon: <Calculator size={18} />, roles: ["ADMIN"] },
   { href: "/keuangan/pengeluaran", label: "CAPEX & OPEX", icon: <Receipt size={18} />, roles: ["ADMIN"] },
   { href: "/keuangan/arus-kas", label: "Arus Kas", icon: <Wallet size={18} />, roles: ["ADMIN"] },

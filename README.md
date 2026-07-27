@@ -15,6 +15,7 @@ Aplikasi web untuk mengelola operasional **Warung Makan Geprek Rzqa** sehari-har
 - **Pengaturan Warung** — nama, alamat, telepon, logo, catatan kaki struk, dan toggle **Mode Dapur** (aktif/nonaktif). Logo otomatis tampil di sidebar, halaman login, dan struk.
 - **Bisa Di-install Jadi Aplikasi (PWA)** — bukan sekadar website: aplikasi ini punya ikon (otomatis pakai logo warung dari Pengaturan), bisa ditambahkan ke Layar Utama HP, dan dibuka fullscreen tanpa address bar seperti aplikasi asli. Tidak perlu Play Store/App Store.
 - **Keuangan** (khusus Admin):
+  - **Tutup Kasir Harian** — catat cepat setiap tutup toko: uang Kas Toko yang disisihkan (bukan biaya, tetap milik usaha) plus biaya Gas, Listrik, dan Gaji Karyawan hari itu. Gas/Listrik/Gaji otomatis tercatat sebagai OPEX di CAPEX & OPEX.
   - **HPP** — biaya bahan baku per menu (dari resep × biaya bahan) dibanding harga jual, dengan margin per item.
   - **CAPEX & OPEX** — catat pengeluaran modal/investasi dan biaya operasional rutin.
   - **Arus Kas** — kas masuk (penjualan) vs kas keluar (CAPEX+OPEX) per periode, lengkap grafik harian.
