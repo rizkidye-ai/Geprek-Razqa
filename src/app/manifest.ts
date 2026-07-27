@@ -13,7 +13,6 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     description: "Aplikasi kasir & manajemen warung makan.",
     start_url: "/",
     display: "standalone",
-    orientation: "portrait",
     background_color: "#ffffff",
     theme_color: "#f97316",
     icons: [
