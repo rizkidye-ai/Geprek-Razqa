@@ -18,7 +18,7 @@ export default async function TutupKasirPage() {
       <div>
         <h1 className="flex items-center text-xl font-bold text-gray-900">
           Tutup Kasir Harian
-          <InfoTooltip text="Catat cepat setiap tutup toko: uang Kas Toko yang disisihkan (bukan biaya — tetap milik usaha, cuma disimpan), plus biaya Gas, Listrik, dan Gaji Karyawan hari itu. Uang Gas/Listrik/Gaji otomatis tercatat sebagai OPEX di halaman CAPEX & OPEX supaya Laba Rugi & BEP tetap akurat. Kas Toko dicatat terpisah di sini karena bukan pengeluaran." />
+          <InfoTooltip text="Catat cepat setiap tutup toko: uang Kas Toko yang disisihkan (bukan biaya — tetap milik usaha, cuma disimpan), plus biaya Gas, Listrik, dan Gaji Karyawan hari itu. Ada juga kolom 'Pengeluaran Lain' untuk biaya tak terduga (mis. beli bumbu tambahan) tanpa perlu pindah halaman. Semua biaya (Gas/Listrik/Gaji/Lain) otomatis tercatat sebagai OPEX/CAPEX di halaman CAPEX & OPEX supaya Laba Rugi & BEP tetap akurat. Kas Toko dicatat terpisah di sini karena bukan pengeluaran." />
         </h1>
         <p className="text-sm text-gray-500">
           Catat alokasi kas toko, uang gas, listrik, dan gaji karyawan setiap tutup toko

@@ -26,10 +26,18 @@ export async function recordDailyClosingAction(formData: FormData): Promise<Dail
   const listrik = parseInt(String(formData.get("listrik") ?? "0"), 10) || 0;
   const gajiKaryawan = parseInt(String(formData.get("gajiKaryawan") ?? "0"), 10) || 0;
 
-  if ([kasToko, uangGas, listrik, gajiKaryawan].some((v) => v < 0)) {
+  const otherType = String(formData.get("otherType") ?? "OPEX") as "OPEX" | "CAPEX";
+  const otherCategory = String(formData.get("otherCategory") ?? "").trim();
+  const otherAmount = parseInt(String(formData.get("otherAmount") ?? "0"), 10) || 0;
+  const otherDescription = String(formData.get("otherDescription") ?? "").trim();
+
+  if ([kasToko, uangGas, listrik, gajiKaryawan, otherAmount].some((v) => v < 0)) {
     return { success: false, error: "Jumlah tidak boleh negatif." };
   }
-  if (kasToko <= 0 && uangGas <= 0 && listrik <= 0 && gajiKaryawan <= 0) {
+  if (otherAmount > 0 && !otherCategory) {
+    return { success: false, error: "Isi kategori untuk pengeluaran lain." };
+  }
+  if (kasToko <= 0 && uangGas <= 0 && listrik <= 0 && gajiKaryawan <= 0 && otherAmount <= 0) {
     return { success: false, error: "Isi minimal salah satu jumlah." };
   }
 
@@ -41,7 +49,7 @@ export async function recordDailyClosingAction(formData: FormData): Promise<Dail
     }
 
     const expenseRows: {
-      type: "OPEX";
+      type: "OPEX" | "CAPEX";
       category: string;
       description: string;
       amount: number;
@@ -74,6 +82,16 @@ export async function recordDailyClosingAction(formData: FormData): Promise<Dail
         category: "Gaji Karyawan",
         description: "Tutup kasir harian",
         amount: gajiKaryawan,
+        date,
+        createdById: user.id,
+      });
+    }
+    if (otherAmount > 0) {
+      expenseRows.push({
+        type: otherType,
+        category: otherCategory,
+        description: otherDescription || "Tutup kasir harian",
+        amount: otherAmount,
         date,
         createdById: user.id,
       });

@@ -19,6 +19,7 @@ async function main() {
   });
 
   // ---------- Users ----------
+  await prisma.cashReserve.deleteMany();
   await prisma.expense.deleteMany();
   await prisma.stockMovement.deleteMany();
   await prisma.payment.deleteMany();
