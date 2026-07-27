@@ -3,7 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/lib/format";
 import { SubmitButton } from "@/components/SubmitButton";
 import { StockMovementForm } from "@/components/StockMovementForm";
-import { createIngredientAction, deleteIngredientAction, updateIngredientAction } from "./actions";
+import {
+  adjustStockAction,
+  createIngredientAction,
+  deleteIngredientAction,
+  updateIngredientAction,
+} from "./actions";
 import { InfoTooltip } from "@/components/InfoTooltip";
 
 export default async function StokPage() {
@@ -26,7 +31,7 @@ export default async function StokPage() {
       <div>
         <h1 className="flex items-center text-xl font-bold text-gray-900">
           Stok Bahan Baku
-          <InfoTooltip text="Pantau stok bahan baku, catat barang masuk (pembelian) dan keluar (rusak/hilang). Kolom 'Biaya per Satuan' wajib diisi supaya perhitungan HPP di halaman Keuangan akurat." />
+          <InfoTooltip text="Pantau stok bahan baku, catat barang masuk (pembelian) dan keluar (rusak/hilang). Kolom 'Stok Saat Ini' bisa diedit langsung (klik ikon simpan di sampingnya) untuk koreksi cepat, misalnya setelah hitung stok fisik (stok opname) — otomatis tercatat di Riwayat Stok. Kolom 'Biaya per Satuan' wajib diisi supaya perhitungan HPP di halaman Keuangan akurat." />
         </h1>
         <p className="text-sm text-gray-500">
           Pantau stok, catat barang masuk/keluar, dan cegah kehabisan bahan
@@ -100,8 +105,26 @@ export default async function StokPage() {
               return (
                 <tr key={i.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900">{i.name}</td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {i.stock} {i.unit}
+                  <td className="px-4 py-3">
+                    <form action={adjustStockAction} className="flex items-center gap-1">
+                      <input type="hidden" name="id" value={i.id} />
+                      <input
+                        name="stock"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        defaultValue={i.stock}
+                        className="w-20 rounded border border-gray-200 px-1.5 py-1 text-xs text-gray-600"
+                      />
+                      <span className="text-xs text-gray-400">{i.unit}</span>
+                      <button
+                        type="submit"
+                        className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                        title="Koreksi stok langsung (mis. setelah stok opname)"
+                      >
+                        <Save size={13} />
+                      </button>
+                    </form>
                   </td>
                   <td className="px-4 py-3 text-gray-600">
                     {i.minStock} {i.unit}

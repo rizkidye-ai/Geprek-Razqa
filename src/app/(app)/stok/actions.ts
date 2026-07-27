@@ -52,6 +52,35 @@ export async function updateIngredientAction(formData: FormData) {
   revalidatePath("/keuangan/hpp");
 }
 
+export async function adjustStockAction(formData: FormData) {
+  const user = await requireStaff();
+  const id = String(formData.get("id") ?? "");
+  const newStockRaw = parseFloat(String(formData.get("stock") ?? "0"));
+  const newStock = Number.isNaN(newStockRaw) || newStockRaw < 0 ? 0 : newStockRaw;
+
+  const ingredient = await prisma.ingredient.findUnique({ where: { id } });
+  if (!ingredient) return;
+
+  const delta = newStock - ingredient.stock;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.ingredient.update({ where: { id }, data: { stock: newStock } });
+    if (delta !== 0) {
+      await tx.stockMovement.create({
+        data: {
+          ingredientId: id,
+          type: delta > 0 ? "MASUK" : "KELUAR",
+          qty: Math.abs(delta),
+          note: "Koreksi stok manual",
+          createdById: user.id,
+        },
+      });
+    }
+  });
+
+  revalidatePath("/stok");
+}
+
 export async function deleteIngredientAction(formData: FormData) {
   await requireStaff();
   const id = String(formData.get("id") ?? "");
